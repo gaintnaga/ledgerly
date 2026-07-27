@@ -1,5 +1,5 @@
 import "dotenv/config";
-import { PrismaClient } from "../app/generated/prisma/client";
+import { PrismaClient, Role , AuthProvider  } from "../app/generated/prisma/client";
 import { PrismaPg } from "@prisma/adapter-pg";
 import bcrypt from "bcrypt";
 
@@ -12,7 +12,7 @@ const prisma = new PrismaClient({
 });
 
 async function main() {
-  const email = "ranamit59@gmail.com";
+  const email = "ranaamit59@gmail.com";
 
   const existingUser = await prisma.user.findUnique({
     where: { email },
@@ -30,7 +30,8 @@ async function main() {
       name: "Admin",
       email,
       password: hashedPassword,
-      role: "ADMIN",
+      role: Role.ADMIN,
+      provider: AuthProvider.GOOGLE,
     },
   });
 

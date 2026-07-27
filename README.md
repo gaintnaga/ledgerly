@@ -34,3 +34,25 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+
+
+if new npm udpdate first then 
+npm install @prisma/client prisma
+npm install @supabase/supabase-js
+npx prisma generate
+npm install bcrypt
+npm install -D @types/bcrypt
+
+npm install jsonwebtoken
+npm install -D @types/jsonwebtoken
+
+npm install @prisma/adapter-pg pg
+npx prisma generate
+npx prisma migrate dev --name init
+npx prisma migrate reset
+npx tsx prisma/seed.ts
+
+npm install swagger-jsdoc swagger-ui-react
+npm install -D @types/swagger-jsdoc
+
+npm install google-auth-library

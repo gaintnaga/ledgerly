@@ -20,6 +20,7 @@ export default function LoginPage() {
     try {
       const response = await fetch("/api/auth/login", {
         method: "POST",
+        credentials: "include",
         headers: {
           "Content-Type": "application/json",
         },
@@ -33,7 +34,8 @@ export default function LoginPage() {
 
       if (response.ok && data.success) {
         alert("Login successfully");
-        router.push("/dashboard");
+        console.log("Redirecting to dashboard...");
+        window.location.assign("/dashboard");
       } else {
         alert(data.message || "Invalid Email or Password");
       }
@@ -44,6 +46,10 @@ export default function LoginPage() {
       setLoading(false);
     }
   };
+
+  const handleGoogleLogin = () => {
+    window.location.href = "/api/auth/google";
+  }
   return (
     <main className="flex min-h-screen items-center justify-center bg-gray-100">
       <div className="w-96 rounded-lg bg-white p-8 shadow-md">
@@ -90,7 +96,7 @@ export default function LoginPage() {
           <div className="h-px flex-1 bg-gray-300"></div>
         </div>
 
-        <button className="flex w-full items-center justify-center gap-2 rounded-md border border-gray-300 bg-white py-2 text-gray-700 hover:bg-gray-100">
+        <button type= "button" onClick={handleGoogleLogin} className="flex w-full items-center justify-center gap-2 rounded-md border border-gray-300 bg-white py-2 text-gray-700 hover:bg-gray-100">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 48 48"

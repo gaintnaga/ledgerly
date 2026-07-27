@@ -17,12 +17,68 @@ enum Role {
   USER
 }
 
+enum AuthProvider {
+  CREDENTIALS
+  GOOGLE
+}
+
 model User {
   id String @id @default(cuid())
   name String
   email String @unique
-  password String
+  password String?
+  provider     AuthProvider  @default(CREDENTIALS)
+  googleId     String?       @unique
+  profileImage String?
+
+  purchasesPaid  Purchase[] @relation("Paidby")
+  purchasesCreated Purchase[] @relation("Createdby")
+
+  purchaseParticipants PurchaseParticipant[]
+
   role Role @default(USER)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+model Purchase {
+  id String @id @default(cuid())
+  title String
+  description String
+  totalAmount Decimal @db.Decimal(10,2)
+  purchaseDate DateTime @default(now())
+  storeName String?
+  receiptImage String?
+
+  paidById String
+  paidBy User @relation("Paidby",fields : [paidById],references : [id])
+
+  createdById String
+  createdBy User @relation("Createdby" , fields : [createdById],references : [id])
+
+  participants PurchaseParticipant[]
+
+  items PurchaseItem[]
+
+  createdAt DateTime @default(now())
+  updateAt  DateTime @updatedAt
+}
+
+model PurchaseParticipant {
+  id String @id @default(cuid())
+  purchaseId String
+  purchase Purchase @relation(fields : [purchaseId], references : [id] , onDelete : Cascade)
+
+  userId String
+  user User @relation(fields : [userId] , references : [id])
+
+  shareAmount Decimal @db.Decimal(10,2)
+
+  createAt DateTime @default(now())
+}
+
+model PurchaseItem {
+  id String @id @default(cuid())
+  purchaseId String
+  purchase Purchase @relation
 }
