@@ -44,7 +44,7 @@ model User {
 model Purchase {
   id String @id @default(cuid())
   title String
-  description String
+  description String?
   totalAmount Decimal @db.Decimal(10,2)
   purchaseDate DateTime @default(now())
   storeName String?
@@ -61,7 +61,7 @@ model Purchase {
   items PurchaseItem[]
 
   createdAt DateTime @default(now())
-  updateAt  DateTime @updatedAt
+  updatedAt  DateTime @updatedAt
 }
 
 model PurchaseParticipant {
@@ -74,11 +74,20 @@ model PurchaseParticipant {
 
   shareAmount Decimal @db.Decimal(10,2)
 
-  createAt DateTime @default(now())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model PurchaseItem {
   id String @id @default(cuid())
   purchaseId String
-  purchase Purchase @relation
+  purchase Purchase @relation(fields: [purchaseId], references : [id] , onDelete:Cascade)
+  itemName String
+  quantity Decimal @db.Decimal(10,2)
+  unit String?
+  price Decimal @db.Decimal(10,2)
+  total Decimal @db.Decimal(10,2)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
