@@ -56,3 +56,5 @@ npm install swagger-jsdoc swagger-ui-react
 npm install -D @types/swagger-jsdoc
 
 npm install google-auth-library
+
+npm install lucide-react
