@@ -22,10 +22,12 @@ function TrashIcon({ size = 18 }: { size?: number }) {
 }
 
 export interface PurchaseItem {
-  id: number;
+  id: number | string;
   itemName: string;
   quantity: number;
-  unitPrice: number;
+  unitPrice?: number;
+  price?: number;
+  total?: number;
 }
 
 interface PurchaseItemRowProps {
@@ -39,16 +41,16 @@ export default function PurchaseItemRow({
   onChange,
   onRemove,
 }: PurchaseItemRowProps) {
-  const subtotal = item.quantity * item.unitPrice;
+  const currentPrice = Number(item.unitPrice ?? item.price ?? 0);
+  const currentQty = Number(item.quantity ?? 1);
+  const subtotal = currentQty * currentPrice;
 
   return (
-    <div className="grid grid-cols-12 gap-3 items-end rounded-lg border p-4">
-
+    <div className="grid grid-cols-12 gap-3 items-end rounded-lg border p-4 dark:border-gray-800 dark:bg-gray-800/40">
       <div className="col-span-4">
-        <label className="mb-1 block text-sm font-medium">
-          Item
+        <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">
+          Item Name
         </label>
-
         <input
           type="text"
           value={item.itemName}
@@ -58,59 +60,62 @@ export default function PurchaseItemRow({
               itemName: e.target.value,
             })
           }
-          className="w-full rounded-lg border px-3 py-2"
-          placeholder="Rice"
+          className="w-full rounded-lg border px-3 py-2 text-sm dark:border-gray-700 dark:bg-gray-800 dark:text-white"
+          placeholder="e.g. Rice"
         />
       </div>
 
       <div className="col-span-2">
-        <label className="mb-1 block text-sm font-medium">
+        <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">
           Qty
         </label>
-
         <input
           type="number"
           step="any"
           min={0}
-          value={item.quantity}
-          onChange={(e) =>
+          value={currentQty}
+          onChange={(e) => {
+            const newQty = Number(e.target.value);
             onChange({
               ...item,
-              quantity: Number(e.target.value),
-            })
-          }
-          className="w-full rounded-lg border px-3 py-2"
-          placeholder="e.g. 2.5"
+              quantity: newQty,
+              unitPrice: currentPrice,
+              total: newQty * currentPrice,
+            });
+          }}
+          className="w-full rounded-lg border px-3 py-2 text-sm dark:border-gray-700 dark:bg-gray-800 dark:text-white"
+          placeholder="1"
         />
       </div>
 
       <div className="col-span-2">
-        <label className="mb-1 block text-sm font-medium">
+        <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">
           Unit Price
         </label>
-
         <input
           type="number"
           step="any"
           min={0}
-          value={item.unitPrice}
-          onChange={(e) =>
+          value={currentPrice}
+          onChange={(e) => {
+            const newPrice = Number(e.target.value);
             onChange({
               ...item,
-              unitPrice: Number(e.target.value),
-            })
-          }
-          className="w-full rounded-lg border px-3 py-2"
+              unitPrice: newPrice,
+              price: newPrice,
+              total: currentQty * newPrice,
+            });
+          }}
+          className="w-full rounded-lg border px-3 py-2 text-sm dark:border-gray-700 dark:bg-gray-800 dark:text-white"
           placeholder="0.00"
         />
       </div>
 
       <div className="col-span-3">
-        <label className="mb-1 block text-sm font-medium">
+        <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">
           Total
         </label>
-
-        <div className="rounded-lg border bg-gray-100 px-3 py-2 font-semibold">
+        <div className="rounded-lg border bg-gray-100 px-3 py-2 font-semibold text-sm dark:border-gray-700 dark:bg-gray-800 dark:text-white">
           ₹{subtotal.toFixed(2)}
         </div>
       </div>
@@ -119,13 +124,12 @@ export default function PurchaseItemRow({
         <button
           type="button"
           onClick={onRemove}
-          className="rounded-lg bg-red-600 p-2 text-white hover:bg-red-700 flex items-center justify-center"
+          className="rounded-lg bg-red-600 p-2 text-white hover:bg-red-700 transition flex items-center justify-center"
           title="Remove Item"
         >
           <TrashIcon size={18} />
         </button>
       </div>
-
     </div>
   );
 }

@@ -31,8 +31,8 @@ model User {
   googleId     String?       @unique
   profileImage String?
 
-  purchasesPaid  Purchase[] @relation("Paidby")
-  purchasesCreated Purchase[] @relation("Createdby")
+  purchasesPaid  Purchase[] @relation("PaidBy")
+  purchasesCreated Purchase[] @relation("CreatedBy")
 
   purchaseParticipants PurchaseParticipant[]
 
@@ -51,10 +51,10 @@ model Purchase {
   receiptImage String?
 
   paidById String
-  paidBy User @relation("Paidby",fields : [paidById],references : [id])
+  paidBy User @relation("PaidBy", fields: [paidById], references: [id])
 
   createdById String
-  createdBy User @relation("Createdby" , fields : [createdById],references : [id])
+  createdBy User @relation("CreatedBy", fields: [createdById], references: [id])
 
   participants PurchaseParticipant[]
 
