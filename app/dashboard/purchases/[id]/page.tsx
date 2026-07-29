@@ -77,12 +77,15 @@ export default function PurchaseDetailPage({ params }: PageProps) {
   if (loading) {
     return (
       <div className="space-y-6">
-        <Link
-          href="/dashboard/purchases"
-          className="inline-flex items-center text-sm font-medium text-indigo-600 hover:text-indigo-800 dark:text-indigo-400"
-        >
-          &larr; Back to All Purchases
-        </Link>
+        <div className="flex items-center justify-between">
+          <Link
+            href="/dashboard/purchases"
+            className="inline-flex items-center text-sm font-medium text-indigo-600 hover:text-indigo-800 dark:text-indigo-400"
+          >
+            &larr; Back to All Purchases
+          </Link>
+          <span className="font-mono text-xs text-gray-500">ID: {purchaseId}</span>
+        </div>
         <div className="rounded-xl border bg-white p-8 text-center text-gray-500 shadow-sm dark:border-gray-800 dark:bg-gray-900">
           Loading purchase details...
         </div>
@@ -93,12 +96,15 @@ export default function PurchaseDetailPage({ params }: PageProps) {
   if (!purchase) {
     return (
       <div className="space-y-6">
-        <Link
-          href="/dashboard/purchases"
-          className="inline-flex items-center text-sm font-medium text-indigo-600 hover:text-indigo-800 dark:text-indigo-400"
-        >
-          &larr; Back to All Purchases
-        </Link>
+        <div className="flex items-center justify-between">
+          <Link
+            href="/dashboard/purchases"
+            className="inline-flex items-center text-sm font-medium text-indigo-600 hover:text-indigo-800 dark:text-indigo-400"
+          >
+            &larr; Back to All Purchases
+          </Link>
+          <span className="font-mono text-xs text-gray-500">ID: {purchaseId}</span>
+        </div>
         <div className="rounded-xl border bg-white p-8 text-center text-gray-500 shadow-sm dark:border-gray-800 dark:bg-gray-900">
           Purchase record not found.
         </div>
@@ -185,18 +191,14 @@ export default function PurchaseDetailPage({ params }: PageProps) {
 
         <Card>
           <CardHeader>
-            <CardTitle>Split Count</CardTitle>
+            <CardTitle>Participants Count</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="text-lg font-semibold text-gray-900 dark:text-white">
-              {participantsList.length} Participants
+              {participantsList.length} {participantsList.length === 1 ? "Participant" : "Participants"}
             </div>
             <p className="text-xs text-gray-500">
-              ₹
-              {participantsList.length > 0
-                ? (totalVal / participantsList.length).toFixed(2)
-                : totalVal.toFixed(2)}{" "}
-              per person
+              Members included in this purchase
             </p>
           </CardContent>
         </Card>
@@ -233,7 +235,7 @@ export default function PurchaseDetailPage({ params }: PageProps) {
                     <TableCell>
                       {item.quantity} {item.unit || "pcs"}
                     </TableCell>
-                    <TableCell>₹{item.price}</TableCell>
+                    <TableCell>₹{itemPrice.toFixed(2)}</TableCell>
                     <TableCell className="text-right font-medium">₹{itemTotal.toFixed(2)}</TableCell>
                   </TableRow>
                 );
@@ -243,22 +245,22 @@ export default function PurchaseDetailPage({ params }: PageProps) {
         </Table>
       </div>
 
-      {/* Participants Split */}
+      {/* Participants Included */}
       <div className="space-y-3">
-        <h2 className="text-lg font-bold text-gray-900 dark:text-white">Participant Shares</h2>
+        <h2 className="text-lg font-bold text-gray-900 dark:text-white">Participants Included</h2>
         <Table>
           <TableHeader>
             <TableRow>
               <TableHead>Participant</TableHead>
               <TableHead>Email</TableHead>
-              <TableHead className="text-right">Share Amount</TableHead>
+              <TableHead className="text-right">Status</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {participantsList.length === 0 ? (
               <TableRow>
                 <TableCell colSpan={3} className="text-center text-gray-500 py-4">
-                  No participants recorded.
+                  No participants recorded for this purchase.
                 </TableCell>
               </TableRow>
             ) : (
@@ -270,8 +272,10 @@ export default function PurchaseDetailPage({ params }: PageProps) {
                   <TableCell className="text-gray-500 text-xs">
                     {p.user?.email || "—"}
                   </TableCell>
-                  <TableCell className="text-right font-bold text-indigo-600 dark:text-indigo-400">
-                    ₹{Number(p.shareAmount || 0).toFixed(2)}
+                  <TableCell className="text-right">
+                    <span className="inline-flex items-center rounded-full bg-indigo-100 px-2.5 py-0.5 text-xs font-semibold text-indigo-700 dark:bg-indigo-900/40 dark:text-indigo-300">
+                      Included
+                    </span>
                   </TableCell>
                 </TableRow>
               ))

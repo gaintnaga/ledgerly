@@ -25,10 +25,25 @@ export async function getAuthUser(req: NextRequest): Promise<AuthUser | null> {
     const secretKey = process.env.JWT_SECRET || "ledgerly_super_secret_key_2026_change_me";
     const secret = new TextEncoder().encode(secretKey);
     const { payload } = await jwtVerify(token, secret);
+
+    const userId = payload.id as string;
+    if (!userId) return null;
+
+    // Verify user exists and is active in DB
+    const { prisma } = await import("@/lib/prisma");
+    const dbUser = await prisma.user.findUnique({
+      where: { id: userId },
+      select: { id: true, email: true, role: true, isActive: true },
+    });
+
+    if (!dbUser || !dbUser.isActive) {
+      return null;
+    }
+
     return {
-      id: payload.id as string,
-      email: payload.email as string,
-      role: payload.role as string,
+      id: dbUser.id,
+      email: dbUser.email,
+      role: dbUser.role,
     };
   } catch (error) {
     console.error("JWT Auth Verification Error:", error);

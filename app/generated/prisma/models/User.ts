@@ -32,6 +32,10 @@ export type UserMinAggregateOutputType = {
   provider: $Enums.AuthProvider | null
   googleId: string | null
   profileImage: string | null
+  isActive: boolean | null
+  approvedBy: string | null
+  approvedAt: Date | null
+  lastLogin: Date | null
   role: $Enums.Role | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -45,6 +49,10 @@ export type UserMaxAggregateOutputType = {
   provider: $Enums.AuthProvider | null
   googleId: string | null
   profileImage: string | null
+  isActive: boolean | null
+  approvedBy: string | null
+  approvedAt: Date | null
+  lastLogin: Date | null
   role: $Enums.Role | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -58,6 +66,10 @@ export type UserCountAggregateOutputType = {
   provider: number
   googleId: number
   profileImage: number
+  isActive: number
+  approvedBy: number
+  approvedAt: number
+  lastLogin: number
   role: number
   createdAt: number
   updatedAt: number
@@ -73,6 +85,10 @@ export type UserMinAggregateInputType = {
   provider?: true
   googleId?: true
   profileImage?: true
+  isActive?: true
+  approvedBy?: true
+  approvedAt?: true
+  lastLogin?: true
   role?: true
   createdAt?: true
   updatedAt?: true
@@ -86,6 +102,10 @@ export type UserMaxAggregateInputType = {
   provider?: true
   googleId?: true
   profileImage?: true
+  isActive?: true
+  approvedBy?: true
+  approvedAt?: true
+  lastLogin?: true
   role?: true
   createdAt?: true
   updatedAt?: true
@@ -99,6 +119,10 @@ export type UserCountAggregateInputType = {
   provider?: true
   googleId?: true
   profileImage?: true
+  isActive?: true
+  approvedBy?: true
+  approvedAt?: true
+  lastLogin?: true
   role?: true
   createdAt?: true
   updatedAt?: true
@@ -185,6 +209,10 @@ export type UserGroupByOutputType = {
   provider: $Enums.AuthProvider
   googleId: string | null
   profileImage: string | null
+  isActive: boolean
+  approvedBy: string | null
+  approvedAt: Date | null
+  lastLogin: Date | null
   role: $Enums.Role
   createdAt: Date
   updatedAt: Date
@@ -219,12 +247,18 @@ export type UserWhereInput = {
   provider?: Prisma.EnumAuthProviderFilter<"User"> | $Enums.AuthProvider
   googleId?: Prisma.StringNullableFilter<"User"> | string | null
   profileImage?: Prisma.StringNullableFilter<"User"> | string | null
+  isActive?: Prisma.BoolFilter<"User"> | boolean
+  approvedBy?: Prisma.StringNullableFilter<"User"> | string | null
+  approvedAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
+  lastLogin?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
   role?: Prisma.EnumRoleFilter<"User"> | $Enums.Role
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
   purchasesPaid?: Prisma.PurchaseListRelationFilter
   purchasesCreated?: Prisma.PurchaseListRelationFilter
   purchaseParticipants?: Prisma.PurchaseParticipantListRelationFilter
+  approver?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
+  approvedUsers?: Prisma.UserListRelationFilter
 }
 
 export type UserOrderByWithRelationInput = {
@@ -235,12 +269,18 @@ export type UserOrderByWithRelationInput = {
   provider?: Prisma.SortOrder
   googleId?: Prisma.SortOrderInput | Prisma.SortOrder
   profileImage?: Prisma.SortOrderInput | Prisma.SortOrder
+  isActive?: Prisma.SortOrder
+  approvedBy?: Prisma.SortOrderInput | Prisma.SortOrder
+  approvedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  lastLogin?: Prisma.SortOrderInput | Prisma.SortOrder
   role?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   purchasesPaid?: Prisma.PurchaseOrderByRelationAggregateInput
   purchasesCreated?: Prisma.PurchaseOrderByRelationAggregateInput
   purchaseParticipants?: Prisma.PurchaseParticipantOrderByRelationAggregateInput
+  approver?: Prisma.UserOrderByWithRelationInput
+  approvedUsers?: Prisma.UserOrderByRelationAggregateInput
 }
 
 export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -254,12 +294,18 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   password?: Prisma.StringNullableFilter<"User"> | string | null
   provider?: Prisma.EnumAuthProviderFilter<"User"> | $Enums.AuthProvider
   profileImage?: Prisma.StringNullableFilter<"User"> | string | null
+  isActive?: Prisma.BoolFilter<"User"> | boolean
+  approvedBy?: Prisma.StringNullableFilter<"User"> | string | null
+  approvedAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
+  lastLogin?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
   role?: Prisma.EnumRoleFilter<"User"> | $Enums.Role
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
   purchasesPaid?: Prisma.PurchaseListRelationFilter
   purchasesCreated?: Prisma.PurchaseListRelationFilter
   purchaseParticipants?: Prisma.PurchaseParticipantListRelationFilter
+  approver?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
+  approvedUsers?: Prisma.UserListRelationFilter
 }, "id" | "email" | "googleId">
 
 export type UserOrderByWithAggregationInput = {
@@ -270,6 +316,10 @@ export type UserOrderByWithAggregationInput = {
   provider?: Prisma.SortOrder
   googleId?: Prisma.SortOrderInput | Prisma.SortOrder
   profileImage?: Prisma.SortOrderInput | Prisma.SortOrder
+  isActive?: Prisma.SortOrder
+  approvedBy?: Prisma.SortOrderInput | Prisma.SortOrder
+  approvedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  lastLogin?: Prisma.SortOrderInput | Prisma.SortOrder
   role?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -289,6 +339,10 @@ export type UserScalarWhereWithAggregatesInput = {
   provider?: Prisma.EnumAuthProviderWithAggregatesFilter<"User"> | $Enums.AuthProvider
   googleId?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
   profileImage?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
+  isActive?: Prisma.BoolWithAggregatesFilter<"User"> | boolean
+  approvedBy?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
+  approvedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
+  lastLogin?: Prisma.DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
   role?: Prisma.EnumRoleWithAggregatesFilter<"User"> | $Enums.Role
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"User"> | Date | string
@@ -302,12 +356,17 @@ export type UserCreateInput = {
   provider?: $Enums.AuthProvider
   googleId?: string | null
   profileImage?: string | null
+  isActive?: boolean
+  approvedAt?: Date | string | null
+  lastLogin?: Date | string | null
   role?: $Enums.Role
   createdAt?: Date | string
   updatedAt?: Date | string
   purchasesPaid?: Prisma.PurchaseCreateNestedManyWithoutPaidByInput
   purchasesCreated?: Prisma.PurchaseCreateNestedManyWithoutCreatedByInput
   purchaseParticipants?: Prisma.PurchaseParticipantCreateNestedManyWithoutUserInput
+  approver?: Prisma.UserCreateNestedOneWithoutApprovedUsersInput
+  approvedUsers?: Prisma.UserCreateNestedManyWithoutApproverInput
 }
 
 export type UserUncheckedCreateInput = {
@@ -318,12 +377,17 @@ export type UserUncheckedCreateInput = {
   provider?: $Enums.AuthProvider
   googleId?: string | null
   profileImage?: string | null
+  isActive?: boolean
+  approvedBy?: string | null
+  approvedAt?: Date | string | null
+  lastLogin?: Date | string | null
   role?: $Enums.Role
   createdAt?: Date | string
   updatedAt?: Date | string
   purchasesPaid?: Prisma.PurchaseUncheckedCreateNestedManyWithoutPaidByInput
   purchasesCreated?: Prisma.PurchaseUncheckedCreateNestedManyWithoutCreatedByInput
   purchaseParticipants?: Prisma.PurchaseParticipantUncheckedCreateNestedManyWithoutUserInput
+  approvedUsers?: Prisma.UserUncheckedCreateNestedManyWithoutApproverInput
 }
 
 export type UserUpdateInput = {
@@ -334,12 +398,17 @@ export type UserUpdateInput = {
   provider?: Prisma.EnumAuthProviderFieldUpdateOperationsInput | $Enums.AuthProvider
   googleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   profileImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastLogin?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   purchasesPaid?: Prisma.PurchaseUpdateManyWithoutPaidByNestedInput
   purchasesCreated?: Prisma.PurchaseUpdateManyWithoutCreatedByNestedInput
   purchaseParticipants?: Prisma.PurchaseParticipantUpdateManyWithoutUserNestedInput
+  approver?: Prisma.UserUpdateOneWithoutApprovedUsersNestedInput
+  approvedUsers?: Prisma.UserUpdateManyWithoutApproverNestedInput
 }
 
 export type UserUncheckedUpdateInput = {
@@ -350,12 +419,17 @@ export type UserUncheckedUpdateInput = {
   provider?: Prisma.EnumAuthProviderFieldUpdateOperationsInput | $Enums.AuthProvider
   googleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   profileImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  approvedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastLogin?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   purchasesPaid?: Prisma.PurchaseUncheckedUpdateManyWithoutPaidByNestedInput
   purchasesCreated?: Prisma.PurchaseUncheckedUpdateManyWithoutCreatedByNestedInput
   purchaseParticipants?: Prisma.PurchaseParticipantUncheckedUpdateManyWithoutUserNestedInput
+  approvedUsers?: Prisma.UserUncheckedUpdateManyWithoutApproverNestedInput
 }
 
 export type UserCreateManyInput = {
@@ -366,6 +440,10 @@ export type UserCreateManyInput = {
   provider?: $Enums.AuthProvider
   googleId?: string | null
   profileImage?: string | null
+  isActive?: boolean
+  approvedBy?: string | null
+  approvedAt?: Date | string | null
+  lastLogin?: Date | string | null
   role?: $Enums.Role
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -379,6 +457,9 @@ export type UserUpdateManyMutationInput = {
   provider?: Prisma.EnumAuthProviderFieldUpdateOperationsInput | $Enums.AuthProvider
   googleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   profileImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastLogin?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -392,9 +473,28 @@ export type UserUncheckedUpdateManyInput = {
   provider?: Prisma.EnumAuthProviderFieldUpdateOperationsInput | $Enums.AuthProvider
   googleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   profileImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  approvedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastLogin?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type UserNullableScalarRelationFilter = {
+  is?: Prisma.UserWhereInput | null
+  isNot?: Prisma.UserWhereInput | null
+}
+
+export type UserListRelationFilter = {
+  every?: Prisma.UserWhereInput
+  some?: Prisma.UserWhereInput
+  none?: Prisma.UserWhereInput
+}
+
+export type UserOrderByRelationAggregateInput = {
+  _count?: Prisma.SortOrder
 }
 
 export type UserCountOrderByAggregateInput = {
@@ -405,6 +505,10 @@ export type UserCountOrderByAggregateInput = {
   provider?: Prisma.SortOrder
   googleId?: Prisma.SortOrder
   profileImage?: Prisma.SortOrder
+  isActive?: Prisma.SortOrder
+  approvedBy?: Prisma.SortOrder
+  approvedAt?: Prisma.SortOrder
+  lastLogin?: Prisma.SortOrder
   role?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -418,6 +522,10 @@ export type UserMaxOrderByAggregateInput = {
   provider?: Prisma.SortOrder
   googleId?: Prisma.SortOrder
   profileImage?: Prisma.SortOrder
+  isActive?: Prisma.SortOrder
+  approvedBy?: Prisma.SortOrder
+  approvedAt?: Prisma.SortOrder
+  lastLogin?: Prisma.SortOrder
   role?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -431,6 +539,10 @@ export type UserMinOrderByAggregateInput = {
   provider?: Prisma.SortOrder
   googleId?: Prisma.SortOrder
   profileImage?: Prisma.SortOrder
+  isActive?: Prisma.SortOrder
+  approvedBy?: Prisma.SortOrder
+  approvedAt?: Prisma.SortOrder
+  lastLogin?: Prisma.SortOrder
   role?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -439,6 +551,26 @@ export type UserMinOrderByAggregateInput = {
 export type UserScalarRelationFilter = {
   is?: Prisma.UserWhereInput
   isNot?: Prisma.UserWhereInput
+}
+
+export type UserCreateNestedOneWithoutApprovedUsersInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutApprovedUsersInput, Prisma.UserUncheckedCreateWithoutApprovedUsersInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutApprovedUsersInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserCreateNestedManyWithoutApproverInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutApproverInput, Prisma.UserUncheckedCreateWithoutApproverInput> | Prisma.UserCreateWithoutApproverInput[] | Prisma.UserUncheckedCreateWithoutApproverInput[]
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutApproverInput | Prisma.UserCreateOrConnectWithoutApproverInput[]
+  createMany?: Prisma.UserCreateManyApproverInputEnvelope
+  connect?: Prisma.UserWhereUniqueInput | Prisma.UserWhereUniqueInput[]
+}
+
+export type UserUncheckedCreateNestedManyWithoutApproverInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutApproverInput, Prisma.UserUncheckedCreateWithoutApproverInput> | Prisma.UserCreateWithoutApproverInput[] | Prisma.UserUncheckedCreateWithoutApproverInput[]
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutApproverInput | Prisma.UserCreateOrConnectWithoutApproverInput[]
+  createMany?: Prisma.UserCreateManyApproverInputEnvelope
+  connect?: Prisma.UserWhereUniqueInput | Prisma.UserWhereUniqueInput[]
 }
 
 export type StringFieldUpdateOperationsInput = {
@@ -453,12 +585,58 @@ export type EnumAuthProviderFieldUpdateOperationsInput = {
   set?: $Enums.AuthProvider
 }
 
+export type BoolFieldUpdateOperationsInput = {
+  set?: boolean
+}
+
+export type NullableDateTimeFieldUpdateOperationsInput = {
+  set?: Date | string | null
+}
+
 export type EnumRoleFieldUpdateOperationsInput = {
   set?: $Enums.Role
 }
 
 export type DateTimeFieldUpdateOperationsInput = {
   set?: Date | string
+}
+
+export type UserUpdateOneWithoutApprovedUsersNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutApprovedUsersInput, Prisma.UserUncheckedCreateWithoutApprovedUsersInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutApprovedUsersInput
+  upsert?: Prisma.UserUpsertWithoutApprovedUsersInput
+  disconnect?: Prisma.UserWhereInput | boolean
+  delete?: Prisma.UserWhereInput | boolean
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutApprovedUsersInput, Prisma.UserUpdateWithoutApprovedUsersInput>, Prisma.UserUncheckedUpdateWithoutApprovedUsersInput>
+}
+
+export type UserUpdateManyWithoutApproverNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutApproverInput, Prisma.UserUncheckedCreateWithoutApproverInput> | Prisma.UserCreateWithoutApproverInput[] | Prisma.UserUncheckedCreateWithoutApproverInput[]
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutApproverInput | Prisma.UserCreateOrConnectWithoutApproverInput[]
+  upsert?: Prisma.UserUpsertWithWhereUniqueWithoutApproverInput | Prisma.UserUpsertWithWhereUniqueWithoutApproverInput[]
+  createMany?: Prisma.UserCreateManyApproverInputEnvelope
+  set?: Prisma.UserWhereUniqueInput | Prisma.UserWhereUniqueInput[]
+  disconnect?: Prisma.UserWhereUniqueInput | Prisma.UserWhereUniqueInput[]
+  delete?: Prisma.UserWhereUniqueInput | Prisma.UserWhereUniqueInput[]
+  connect?: Prisma.UserWhereUniqueInput | Prisma.UserWhereUniqueInput[]
+  update?: Prisma.UserUpdateWithWhereUniqueWithoutApproverInput | Prisma.UserUpdateWithWhereUniqueWithoutApproverInput[]
+  updateMany?: Prisma.UserUpdateManyWithWhereWithoutApproverInput | Prisma.UserUpdateManyWithWhereWithoutApproverInput[]
+  deleteMany?: Prisma.UserScalarWhereInput | Prisma.UserScalarWhereInput[]
+}
+
+export type UserUncheckedUpdateManyWithoutApproverNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutApproverInput, Prisma.UserUncheckedCreateWithoutApproverInput> | Prisma.UserCreateWithoutApproverInput[] | Prisma.UserUncheckedCreateWithoutApproverInput[]
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutApproverInput | Prisma.UserCreateOrConnectWithoutApproverInput[]
+  upsert?: Prisma.UserUpsertWithWhereUniqueWithoutApproverInput | Prisma.UserUpsertWithWhereUniqueWithoutApproverInput[]
+  createMany?: Prisma.UserCreateManyApproverInputEnvelope
+  set?: Prisma.UserWhereUniqueInput | Prisma.UserWhereUniqueInput[]
+  disconnect?: Prisma.UserWhereUniqueInput | Prisma.UserWhereUniqueInput[]
+  delete?: Prisma.UserWhereUniqueInput | Prisma.UserWhereUniqueInput[]
+  connect?: Prisma.UserWhereUniqueInput | Prisma.UserWhereUniqueInput[]
+  update?: Prisma.UserUpdateWithWhereUniqueWithoutApproverInput | Prisma.UserUpdateWithWhereUniqueWithoutApproverInput[]
+  updateMany?: Prisma.UserUpdateManyWithWhereWithoutApproverInput | Prisma.UserUpdateManyWithWhereWithoutApproverInput[]
+  deleteMany?: Prisma.UserScalarWhereInput | Prisma.UserScalarWhereInput[]
 }
 
 export type UserCreateNestedOneWithoutPurchasesPaidInput = {
@@ -503,6 +681,188 @@ export type UserUpdateOneRequiredWithoutPurchaseParticipantsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutPurchaseParticipantsInput, Prisma.UserUpdateWithoutPurchaseParticipantsInput>, Prisma.UserUncheckedUpdateWithoutPurchaseParticipantsInput>
 }
 
+export type UserCreateWithoutApprovedUsersInput = {
+  id?: string
+  name: string
+  email: string
+  password?: string | null
+  provider?: $Enums.AuthProvider
+  googleId?: string | null
+  profileImage?: string | null
+  isActive?: boolean
+  approvedAt?: Date | string | null
+  lastLogin?: Date | string | null
+  role?: $Enums.Role
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  purchasesPaid?: Prisma.PurchaseCreateNestedManyWithoutPaidByInput
+  purchasesCreated?: Prisma.PurchaseCreateNestedManyWithoutCreatedByInput
+  purchaseParticipants?: Prisma.PurchaseParticipantCreateNestedManyWithoutUserInput
+  approver?: Prisma.UserCreateNestedOneWithoutApprovedUsersInput
+}
+
+export type UserUncheckedCreateWithoutApprovedUsersInput = {
+  id?: string
+  name: string
+  email: string
+  password?: string | null
+  provider?: $Enums.AuthProvider
+  googleId?: string | null
+  profileImage?: string | null
+  isActive?: boolean
+  approvedBy?: string | null
+  approvedAt?: Date | string | null
+  lastLogin?: Date | string | null
+  role?: $Enums.Role
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  purchasesPaid?: Prisma.PurchaseUncheckedCreateNestedManyWithoutPaidByInput
+  purchasesCreated?: Prisma.PurchaseUncheckedCreateNestedManyWithoutCreatedByInput
+  purchaseParticipants?: Prisma.PurchaseParticipantUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutApprovedUsersInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutApprovedUsersInput, Prisma.UserUncheckedCreateWithoutApprovedUsersInput>
+}
+
+export type UserCreateWithoutApproverInput = {
+  id?: string
+  name: string
+  email: string
+  password?: string | null
+  provider?: $Enums.AuthProvider
+  googleId?: string | null
+  profileImage?: string | null
+  isActive?: boolean
+  approvedAt?: Date | string | null
+  lastLogin?: Date | string | null
+  role?: $Enums.Role
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  purchasesPaid?: Prisma.PurchaseCreateNestedManyWithoutPaidByInput
+  purchasesCreated?: Prisma.PurchaseCreateNestedManyWithoutCreatedByInput
+  purchaseParticipants?: Prisma.PurchaseParticipantCreateNestedManyWithoutUserInput
+  approvedUsers?: Prisma.UserCreateNestedManyWithoutApproverInput
+}
+
+export type UserUncheckedCreateWithoutApproverInput = {
+  id?: string
+  name: string
+  email: string
+  password?: string | null
+  provider?: $Enums.AuthProvider
+  googleId?: string | null
+  profileImage?: string | null
+  isActive?: boolean
+  approvedAt?: Date | string | null
+  lastLogin?: Date | string | null
+  role?: $Enums.Role
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  purchasesPaid?: Prisma.PurchaseUncheckedCreateNestedManyWithoutPaidByInput
+  purchasesCreated?: Prisma.PurchaseUncheckedCreateNestedManyWithoutCreatedByInput
+  purchaseParticipants?: Prisma.PurchaseParticipantUncheckedCreateNestedManyWithoutUserInput
+  approvedUsers?: Prisma.UserUncheckedCreateNestedManyWithoutApproverInput
+}
+
+export type UserCreateOrConnectWithoutApproverInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutApproverInput, Prisma.UserUncheckedCreateWithoutApproverInput>
+}
+
+export type UserCreateManyApproverInputEnvelope = {
+  data: Prisma.UserCreateManyApproverInput | Prisma.UserCreateManyApproverInput[]
+  skipDuplicates?: boolean
+}
+
+export type UserUpsertWithoutApprovedUsersInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutApprovedUsersInput, Prisma.UserUncheckedUpdateWithoutApprovedUsersInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutApprovedUsersInput, Prisma.UserUncheckedCreateWithoutApprovedUsersInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutApprovedUsersInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutApprovedUsersInput, Prisma.UserUncheckedUpdateWithoutApprovedUsersInput>
+}
+
+export type UserUpdateWithoutApprovedUsersInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  provider?: Prisma.EnumAuthProviderFieldUpdateOperationsInput | $Enums.AuthProvider
+  googleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  profileImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastLogin?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  purchasesPaid?: Prisma.PurchaseUpdateManyWithoutPaidByNestedInput
+  purchasesCreated?: Prisma.PurchaseUpdateManyWithoutCreatedByNestedInput
+  purchaseParticipants?: Prisma.PurchaseParticipantUpdateManyWithoutUserNestedInput
+  approver?: Prisma.UserUpdateOneWithoutApprovedUsersNestedInput
+}
+
+export type UserUncheckedUpdateWithoutApprovedUsersInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  provider?: Prisma.EnumAuthProviderFieldUpdateOperationsInput | $Enums.AuthProvider
+  googleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  profileImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  approvedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastLogin?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  purchasesPaid?: Prisma.PurchaseUncheckedUpdateManyWithoutPaidByNestedInput
+  purchasesCreated?: Prisma.PurchaseUncheckedUpdateManyWithoutCreatedByNestedInput
+  purchaseParticipants?: Prisma.PurchaseParticipantUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type UserUpsertWithWhereUniqueWithoutApproverInput = {
+  where: Prisma.UserWhereUniqueInput
+  update: Prisma.XOR<Prisma.UserUpdateWithoutApproverInput, Prisma.UserUncheckedUpdateWithoutApproverInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutApproverInput, Prisma.UserUncheckedCreateWithoutApproverInput>
+}
+
+export type UserUpdateWithWhereUniqueWithoutApproverInput = {
+  where: Prisma.UserWhereUniqueInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutApproverInput, Prisma.UserUncheckedUpdateWithoutApproverInput>
+}
+
+export type UserUpdateManyWithWhereWithoutApproverInput = {
+  where: Prisma.UserScalarWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateManyMutationInput, Prisma.UserUncheckedUpdateManyWithoutApproverInput>
+}
+
+export type UserScalarWhereInput = {
+  AND?: Prisma.UserScalarWhereInput | Prisma.UserScalarWhereInput[]
+  OR?: Prisma.UserScalarWhereInput[]
+  NOT?: Prisma.UserScalarWhereInput | Prisma.UserScalarWhereInput[]
+  id?: Prisma.StringFilter<"User"> | string
+  name?: Prisma.StringFilter<"User"> | string
+  email?: Prisma.StringFilter<"User"> | string
+  password?: Prisma.StringNullableFilter<"User"> | string | null
+  provider?: Prisma.EnumAuthProviderFilter<"User"> | $Enums.AuthProvider
+  googleId?: Prisma.StringNullableFilter<"User"> | string | null
+  profileImage?: Prisma.StringNullableFilter<"User"> | string | null
+  isActive?: Prisma.BoolFilter<"User"> | boolean
+  approvedBy?: Prisma.StringNullableFilter<"User"> | string | null
+  approvedAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
+  lastLogin?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
+  role?: Prisma.EnumRoleFilter<"User"> | $Enums.Role
+  createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
+  updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
+}
+
 export type UserCreateWithoutPurchasesPaidInput = {
   id?: string
   name: string
@@ -511,11 +871,16 @@ export type UserCreateWithoutPurchasesPaidInput = {
   provider?: $Enums.AuthProvider
   googleId?: string | null
   profileImage?: string | null
+  isActive?: boolean
+  approvedAt?: Date | string | null
+  lastLogin?: Date | string | null
   role?: $Enums.Role
   createdAt?: Date | string
   updatedAt?: Date | string
   purchasesCreated?: Prisma.PurchaseCreateNestedManyWithoutCreatedByInput
   purchaseParticipants?: Prisma.PurchaseParticipantCreateNestedManyWithoutUserInput
+  approver?: Prisma.UserCreateNestedOneWithoutApprovedUsersInput
+  approvedUsers?: Prisma.UserCreateNestedManyWithoutApproverInput
 }
 
 export type UserUncheckedCreateWithoutPurchasesPaidInput = {
@@ -526,11 +891,16 @@ export type UserUncheckedCreateWithoutPurchasesPaidInput = {
   provider?: $Enums.AuthProvider
   googleId?: string | null
   profileImage?: string | null
+  isActive?: boolean
+  approvedBy?: string | null
+  approvedAt?: Date | string | null
+  lastLogin?: Date | string | null
   role?: $Enums.Role
   createdAt?: Date | string
   updatedAt?: Date | string
   purchasesCreated?: Prisma.PurchaseUncheckedCreateNestedManyWithoutCreatedByInput
   purchaseParticipants?: Prisma.PurchaseParticipantUncheckedCreateNestedManyWithoutUserInput
+  approvedUsers?: Prisma.UserUncheckedCreateNestedManyWithoutApproverInput
 }
 
 export type UserCreateOrConnectWithoutPurchasesPaidInput = {
@@ -546,11 +916,16 @@ export type UserCreateWithoutPurchasesCreatedInput = {
   provider?: $Enums.AuthProvider
   googleId?: string | null
   profileImage?: string | null
+  isActive?: boolean
+  approvedAt?: Date | string | null
+  lastLogin?: Date | string | null
   role?: $Enums.Role
   createdAt?: Date | string
   updatedAt?: Date | string
   purchasesPaid?: Prisma.PurchaseCreateNestedManyWithoutPaidByInput
   purchaseParticipants?: Prisma.PurchaseParticipantCreateNestedManyWithoutUserInput
+  approver?: Prisma.UserCreateNestedOneWithoutApprovedUsersInput
+  approvedUsers?: Prisma.UserCreateNestedManyWithoutApproverInput
 }
 
 export type UserUncheckedCreateWithoutPurchasesCreatedInput = {
@@ -561,11 +936,16 @@ export type UserUncheckedCreateWithoutPurchasesCreatedInput = {
   provider?: $Enums.AuthProvider
   googleId?: string | null
   profileImage?: string | null
+  isActive?: boolean
+  approvedBy?: string | null
+  approvedAt?: Date | string | null
+  lastLogin?: Date | string | null
   role?: $Enums.Role
   createdAt?: Date | string
   updatedAt?: Date | string
   purchasesPaid?: Prisma.PurchaseUncheckedCreateNestedManyWithoutPaidByInput
   purchaseParticipants?: Prisma.PurchaseParticipantUncheckedCreateNestedManyWithoutUserInput
+  approvedUsers?: Prisma.UserUncheckedCreateNestedManyWithoutApproverInput
 }
 
 export type UserCreateOrConnectWithoutPurchasesCreatedInput = {
@@ -592,11 +972,16 @@ export type UserUpdateWithoutPurchasesPaidInput = {
   provider?: Prisma.EnumAuthProviderFieldUpdateOperationsInput | $Enums.AuthProvider
   googleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   profileImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastLogin?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   purchasesCreated?: Prisma.PurchaseUpdateManyWithoutCreatedByNestedInput
   purchaseParticipants?: Prisma.PurchaseParticipantUpdateManyWithoutUserNestedInput
+  approver?: Prisma.UserUpdateOneWithoutApprovedUsersNestedInput
+  approvedUsers?: Prisma.UserUpdateManyWithoutApproverNestedInput
 }
 
 export type UserUncheckedUpdateWithoutPurchasesPaidInput = {
@@ -607,11 +992,16 @@ export type UserUncheckedUpdateWithoutPurchasesPaidInput = {
   provider?: Prisma.EnumAuthProviderFieldUpdateOperationsInput | $Enums.AuthProvider
   googleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   profileImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  approvedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastLogin?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   purchasesCreated?: Prisma.PurchaseUncheckedUpdateManyWithoutCreatedByNestedInput
   purchaseParticipants?: Prisma.PurchaseParticipantUncheckedUpdateManyWithoutUserNestedInput
+  approvedUsers?: Prisma.UserUncheckedUpdateManyWithoutApproverNestedInput
 }
 
 export type UserUpsertWithoutPurchasesCreatedInput = {
@@ -633,11 +1023,16 @@ export type UserUpdateWithoutPurchasesCreatedInput = {
   provider?: Prisma.EnumAuthProviderFieldUpdateOperationsInput | $Enums.AuthProvider
   googleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   profileImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastLogin?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   purchasesPaid?: Prisma.PurchaseUpdateManyWithoutPaidByNestedInput
   purchaseParticipants?: Prisma.PurchaseParticipantUpdateManyWithoutUserNestedInput
+  approver?: Prisma.UserUpdateOneWithoutApprovedUsersNestedInput
+  approvedUsers?: Prisma.UserUpdateManyWithoutApproverNestedInput
 }
 
 export type UserUncheckedUpdateWithoutPurchasesCreatedInput = {
@@ -648,11 +1043,16 @@ export type UserUncheckedUpdateWithoutPurchasesCreatedInput = {
   provider?: Prisma.EnumAuthProviderFieldUpdateOperationsInput | $Enums.AuthProvider
   googleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   profileImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  approvedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastLogin?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   purchasesPaid?: Prisma.PurchaseUncheckedUpdateManyWithoutPaidByNestedInput
   purchaseParticipants?: Prisma.PurchaseParticipantUncheckedUpdateManyWithoutUserNestedInput
+  approvedUsers?: Prisma.UserUncheckedUpdateManyWithoutApproverNestedInput
 }
 
 export type UserCreateWithoutPurchaseParticipantsInput = {
@@ -663,11 +1063,16 @@ export type UserCreateWithoutPurchaseParticipantsInput = {
   provider?: $Enums.AuthProvider
   googleId?: string | null
   profileImage?: string | null
+  isActive?: boolean
+  approvedAt?: Date | string | null
+  lastLogin?: Date | string | null
   role?: $Enums.Role
   createdAt?: Date | string
   updatedAt?: Date | string
   purchasesPaid?: Prisma.PurchaseCreateNestedManyWithoutPaidByInput
   purchasesCreated?: Prisma.PurchaseCreateNestedManyWithoutCreatedByInput
+  approver?: Prisma.UserCreateNestedOneWithoutApprovedUsersInput
+  approvedUsers?: Prisma.UserCreateNestedManyWithoutApproverInput
 }
 
 export type UserUncheckedCreateWithoutPurchaseParticipantsInput = {
@@ -678,11 +1083,16 @@ export type UserUncheckedCreateWithoutPurchaseParticipantsInput = {
   provider?: $Enums.AuthProvider
   googleId?: string | null
   profileImage?: string | null
+  isActive?: boolean
+  approvedBy?: string | null
+  approvedAt?: Date | string | null
+  lastLogin?: Date | string | null
   role?: $Enums.Role
   createdAt?: Date | string
   updatedAt?: Date | string
   purchasesPaid?: Prisma.PurchaseUncheckedCreateNestedManyWithoutPaidByInput
   purchasesCreated?: Prisma.PurchaseUncheckedCreateNestedManyWithoutCreatedByInput
+  approvedUsers?: Prisma.UserUncheckedCreateNestedManyWithoutApproverInput
 }
 
 export type UserCreateOrConnectWithoutPurchaseParticipantsInput = {
@@ -709,11 +1119,16 @@ export type UserUpdateWithoutPurchaseParticipantsInput = {
   provider?: Prisma.EnumAuthProviderFieldUpdateOperationsInput | $Enums.AuthProvider
   googleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   profileImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastLogin?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   purchasesPaid?: Prisma.PurchaseUpdateManyWithoutPaidByNestedInput
   purchasesCreated?: Prisma.PurchaseUpdateManyWithoutCreatedByNestedInput
+  approver?: Prisma.UserUpdateOneWithoutApprovedUsersNestedInput
+  approvedUsers?: Prisma.UserUpdateManyWithoutApproverNestedInput
 }
 
 export type UserUncheckedUpdateWithoutPurchaseParticipantsInput = {
@@ -724,11 +1139,88 @@ export type UserUncheckedUpdateWithoutPurchaseParticipantsInput = {
   provider?: Prisma.EnumAuthProviderFieldUpdateOperationsInput | $Enums.AuthProvider
   googleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   profileImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  approvedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastLogin?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   purchasesPaid?: Prisma.PurchaseUncheckedUpdateManyWithoutPaidByNestedInput
   purchasesCreated?: Prisma.PurchaseUncheckedUpdateManyWithoutCreatedByNestedInput
+  approvedUsers?: Prisma.UserUncheckedUpdateManyWithoutApproverNestedInput
+}
+
+export type UserCreateManyApproverInput = {
+  id?: string
+  name: string
+  email: string
+  password?: string | null
+  provider?: $Enums.AuthProvider
+  googleId?: string | null
+  profileImage?: string | null
+  isActive?: boolean
+  approvedAt?: Date | string | null
+  lastLogin?: Date | string | null
+  role?: $Enums.Role
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type UserUpdateWithoutApproverInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  provider?: Prisma.EnumAuthProviderFieldUpdateOperationsInput | $Enums.AuthProvider
+  googleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  profileImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastLogin?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  purchasesPaid?: Prisma.PurchaseUpdateManyWithoutPaidByNestedInput
+  purchasesCreated?: Prisma.PurchaseUpdateManyWithoutCreatedByNestedInput
+  purchaseParticipants?: Prisma.PurchaseParticipantUpdateManyWithoutUserNestedInput
+  approvedUsers?: Prisma.UserUpdateManyWithoutApproverNestedInput
+}
+
+export type UserUncheckedUpdateWithoutApproverInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  provider?: Prisma.EnumAuthProviderFieldUpdateOperationsInput | $Enums.AuthProvider
+  googleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  profileImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastLogin?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  purchasesPaid?: Prisma.PurchaseUncheckedUpdateManyWithoutPaidByNestedInput
+  purchasesCreated?: Prisma.PurchaseUncheckedUpdateManyWithoutCreatedByNestedInput
+  purchaseParticipants?: Prisma.PurchaseParticipantUncheckedUpdateManyWithoutUserNestedInput
+  approvedUsers?: Prisma.UserUncheckedUpdateManyWithoutApproverNestedInput
+}
+
+export type UserUncheckedUpdateManyWithoutApproverInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  provider?: Prisma.EnumAuthProviderFieldUpdateOperationsInput | $Enums.AuthProvider
+  googleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  profileImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastLogin?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 
@@ -740,12 +1232,14 @@ export type UserCountOutputType = {
   purchasesPaid: number
   purchasesCreated: number
   purchaseParticipants: number
+  approvedUsers: number
 }
 
 export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   purchasesPaid?: boolean | UserCountOutputTypeCountPurchasesPaidArgs
   purchasesCreated?: boolean | UserCountOutputTypeCountPurchasesCreatedArgs
   purchaseParticipants?: boolean | UserCountOutputTypeCountPurchaseParticipantsArgs
+  approvedUsers?: boolean | UserCountOutputTypeCountApprovedUsersArgs
 }
 
 /**
@@ -779,6 +1273,13 @@ export type UserCountOutputTypeCountPurchaseParticipantsArgs<ExtArgs extends run
   where?: Prisma.PurchaseParticipantWhereInput
 }
 
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountApprovedUsersArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.UserWhereInput
+}
+
 
 export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -788,12 +1289,18 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   provider?: boolean
   googleId?: boolean
   profileImage?: boolean
+  isActive?: boolean
+  approvedBy?: boolean
+  approvedAt?: boolean
+  lastLogin?: boolean
   role?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   purchasesPaid?: boolean | Prisma.User$purchasesPaidArgs<ExtArgs>
   purchasesCreated?: boolean | Prisma.User$purchasesCreatedArgs<ExtArgs>
   purchaseParticipants?: boolean | Prisma.User$purchaseParticipantsArgs<ExtArgs>
+  approver?: boolean | Prisma.User$approverArgs<ExtArgs>
+  approvedUsers?: boolean | Prisma.User$approvedUsersArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
 
@@ -805,9 +1312,14 @@ export type UserSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   provider?: boolean
   googleId?: boolean
   profileImage?: boolean
+  isActive?: boolean
+  approvedBy?: boolean
+  approvedAt?: boolean
+  lastLogin?: boolean
   role?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  approver?: boolean | Prisma.User$approverArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
 
 export type UserSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -818,9 +1330,14 @@ export type UserSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   provider?: boolean
   googleId?: boolean
   profileImage?: boolean
+  isActive?: boolean
+  approvedBy?: boolean
+  approvedAt?: boolean
+  lastLogin?: boolean
   role?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  approver?: boolean | Prisma.User$approverArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
 
 export type UserSelectScalar = {
@@ -831,20 +1348,30 @@ export type UserSelectScalar = {
   provider?: boolean
   googleId?: boolean
   profileImage?: boolean
+  isActive?: boolean
+  approvedBy?: boolean
+  approvedAt?: boolean
+  lastLogin?: boolean
   role?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "email" | "password" | "provider" | "googleId" | "profileImage" | "role" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
+export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "email" | "password" | "provider" | "googleId" | "profileImage" | "isActive" | "approvedBy" | "approvedAt" | "lastLogin" | "role" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
 export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   purchasesPaid?: boolean | Prisma.User$purchasesPaidArgs<ExtArgs>
   purchasesCreated?: boolean | Prisma.User$purchasesCreatedArgs<ExtArgs>
   purchaseParticipants?: boolean | Prisma.User$purchaseParticipantsArgs<ExtArgs>
+  approver?: boolean | Prisma.User$approverArgs<ExtArgs>
+  approvedUsers?: boolean | Prisma.User$approvedUsersArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }
-export type UserIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
-export type UserIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
+export type UserIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  approver?: boolean | Prisma.User$approverArgs<ExtArgs>
+}
+export type UserIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  approver?: boolean | Prisma.User$approverArgs<ExtArgs>
+}
 
 export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "User"
@@ -852,6 +1379,8 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     purchasesPaid: Prisma.$PurchasePayload<ExtArgs>[]
     purchasesCreated: Prisma.$PurchasePayload<ExtArgs>[]
     purchaseParticipants: Prisma.$PurchaseParticipantPayload<ExtArgs>[]
+    approver: Prisma.$UserPayload<ExtArgs> | null
+    approvedUsers: Prisma.$UserPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -861,6 +1390,10 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     provider: $Enums.AuthProvider
     googleId: string | null
     profileImage: string | null
+    isActive: boolean
+    approvedBy: string | null
+    approvedAt: Date | null
+    lastLogin: Date | null
     role: $Enums.Role
     createdAt: Date
     updatedAt: Date
@@ -1261,6 +1794,8 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
   purchasesPaid<T extends Prisma.User$purchasesPaidArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$purchasesPaidArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PurchasePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   purchasesCreated<T extends Prisma.User$purchasesCreatedArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$purchasesCreatedArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PurchasePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   purchaseParticipants<T extends Prisma.User$purchaseParticipantsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$purchaseParticipantsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PurchaseParticipantPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  approver<T extends Prisma.User$approverArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$approverArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  approvedUsers<T extends Prisma.User$approvedUsersArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$approvedUsersArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1297,6 +1832,10 @@ export interface UserFieldRefs {
   readonly provider: Prisma.FieldRef<"User", 'AuthProvider'>
   readonly googleId: Prisma.FieldRef<"User", 'String'>
   readonly profileImage: Prisma.FieldRef<"User", 'String'>
+  readonly isActive: Prisma.FieldRef<"User", 'Boolean'>
+  readonly approvedBy: Prisma.FieldRef<"User", 'String'>
+  readonly approvedAt: Prisma.FieldRef<"User", 'DateTime'>
+  readonly lastLogin: Prisma.FieldRef<"User", 'DateTime'>
   readonly role: Prisma.FieldRef<"User", 'Role'>
   readonly createdAt: Prisma.FieldRef<"User", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"User", 'DateTime'>
@@ -1554,6 +2093,10 @@ export type UserCreateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensions
    */
   data: Prisma.UserCreateManyInput | Prisma.UserCreateManyInput[]
   skipDuplicates?: boolean
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.UserIncludeCreateManyAndReturn<ExtArgs> | null
 }
 
 /**
@@ -1624,6 +2167,10 @@ export type UserUpdateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensions
    * Limit how many Users to update.
    */
   limit?: number
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.UserIncludeUpdateManyAndReturn<ExtArgs> | null
 }
 
 /**
@@ -1762,6 +2309,49 @@ export type User$purchaseParticipantsArgs<ExtArgs extends runtime.Types.Extensio
   take?: number
   skip?: number
   distinct?: Prisma.PurchaseParticipantScalarFieldEnum | Prisma.PurchaseParticipantScalarFieldEnum[]
+}
+
+/**
+ * User.approver
+ */
+export type User$approverArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the User
+   */
+  select?: Prisma.UserSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the User
+   */
+  omit?: Prisma.UserOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.UserInclude<ExtArgs> | null
+  where?: Prisma.UserWhereInput
+}
+
+/**
+ * User.approvedUsers
+ */
+export type User$approvedUsersArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the User
+   */
+  select?: Prisma.UserSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the User
+   */
+  omit?: Prisma.UserOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.UserInclude<ExtArgs> | null
+  where?: Prisma.UserWhereInput
+  orderBy?: Prisma.UserOrderByWithRelationInput | Prisma.UserOrderByWithRelationInput[]
+  cursor?: Prisma.UserWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.UserScalarFieldEnum | Prisma.UserScalarFieldEnum[]
 }
 
 /**

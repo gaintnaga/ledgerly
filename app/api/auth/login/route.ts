@@ -102,6 +102,23 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    if (!user.isActive) {
+      return NextResponse.json(
+        {
+          success: false,
+          isDeactivated: true,
+          message: "Your account is deactivated or pending approval. Please contact an administrator.",
+        },
+        { status: 403 },
+      );
+    }
+
+    // Update lastLogin timestamp
+    await prisma.user.update({
+      where: { id: user.id },
+      data: { lastLogin: new Date() },
+    });
+
     const token = jwt.sign(
       {
         id: user.id,

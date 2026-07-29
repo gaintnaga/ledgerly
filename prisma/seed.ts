@@ -1,5 +1,5 @@
 import "dotenv/config";
-import { PrismaClient, Role , AuthProvider  } from "../app/generated/prisma/client";
+import { PrismaClient, Role, AuthProvider } from "../app/generated/prisma/client";
 import { PrismaPg } from "@prisma/adapter-pg";
 import bcrypt from "bcrypt";
 
@@ -19,7 +19,7 @@ async function main() {
   });
 
   if (existingUser) {
-    console.log("User already exists");
+    console.log("✅ User already exists");
     return;
   }
 
@@ -31,7 +31,12 @@ async function main() {
       email,
       password: hashedPassword,
       role: Role.ADMIN,
-      provider: AuthProvider.GOOGLE,
+
+      provider: AuthProvider.CREDENTIALS,
+
+      isActive: true,
+      approvedAt: new Date(),
+      lastLogin: null,
     },
   });
 

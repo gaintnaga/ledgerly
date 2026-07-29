@@ -160,6 +160,16 @@ export async function PUT(
       );
     }
 
+    if (user.role !== "ADMIN" && existing.createdById !== user.id) {
+      return NextResponse.json(
+        {
+          success: false,
+          message: "Forbidden. You can only edit purchases created by you.",
+        },
+        { status: 403 }
+      );
+    }
+
     // Input Validation
     if (!body.title || typeof body.title !== "string" || body.title.trim() === "") {
       return NextResponse.json(
@@ -270,6 +280,16 @@ export async function DELETE(
       return NextResponse.json(
         { success: false, message: "Purchase not found" },
         { status: 404 }
+      );
+    }
+
+    if (user.role !== "ADMIN" && existing.createdById !== user.id) {
+      return NextResponse.json(
+        {
+          success: false,
+          message: "Forbidden. You can only delete purchases created by you.",
+        },
+        { status: 403 }
       );
     }
 

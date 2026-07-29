@@ -36,6 +36,8 @@ export default function LoginPage() {
         alert("Login successfully");
         console.log("Redirecting to dashboard...");
         window.location.assign("/dashboard");
+      } else if (response.status === 403 || data.isDeactivated) {
+        window.location.assign("/deactivated");
       } else {
         alert(data.message || "Invalid Email or Password");
       }

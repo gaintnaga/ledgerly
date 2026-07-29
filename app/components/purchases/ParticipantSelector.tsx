@@ -53,10 +53,10 @@ export default function ParticipantSelector({
       <div className="flex items-center justify-between">
         <div>
           <h3 className="text-sm font-semibold text-gray-900 dark:text-white">
-            Divide Bill Between (Participants)
+            Participants (Divide Bill)
           </h3>
           <p className="text-xs text-gray-500">
-            Select team members who share this expense.
+            Select only the team members who share this specific bill.
           </p>
         </div>
 
@@ -72,7 +72,7 @@ export default function ParticipantSelector({
       </div>
 
       {users.length === 0 ? (
-        <p className="text-xs text-gray-500 italic">No users found to split bill with.</p>
+        <p className="text-xs text-gray-500 italic">No users available.</p>
       ) : (
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 md:grid-cols-3">
           {users.map((user) => {
@@ -82,7 +82,7 @@ export default function ParticipantSelector({
                 key={user.id}
                 className={`flex cursor-pointer items-center justify-between rounded-lg border p-3 transition ${
                   isChecked
-                    ? "border-indigo-500 bg-indigo-50/50 dark:bg-indigo-950/30"
+                    ? "border-indigo-500 bg-indigo-50/60 dark:bg-indigo-950/40 ring-1 ring-indigo-500/20"
                     : "border-gray-200 hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-gray-800"
                 }`}
               >
@@ -104,8 +104,8 @@ export default function ParticipantSelector({
                 </div>
 
                 {isChecked && (
-                  <span className="text-xs font-bold text-indigo-600 dark:text-indigo-400">
-                    ₹{sharePerPerson}
+                  <span className="inline-flex items-center rounded-full bg-indigo-100 px-2 py-0.5 text-[10px] font-semibold text-indigo-700 dark:bg-indigo-900/50 dark:text-indigo-300">
+                    Included
                   </span>
                 )}
               </label>
@@ -114,13 +114,21 @@ export default function ParticipantSelector({
         </div>
       )}
 
-      {selected.length > 0 && totalAmount > 0 && (
+      {selected.length > 0 ? (
         <div className="rounded-lg bg-indigo-50 p-3 text-xs text-indigo-900 dark:bg-indigo-950/40 dark:text-indigo-300 flex items-center justify-between">
           <span>
-            Split Breakdown: <strong>{selected.length} people</strong>
+            Selected Participants: <strong>{selected.length} people</strong>
           </span>
-          <span className="font-bold">₹{sharePerPerson} per person</span>
+          {totalAmount > 0 && (
+            <span className="font-semibold">
+              Split: <strong className="text-indigo-700 dark:text-indigo-300">₹{sharePerPerson}</strong> per participant
+            </span>
+          )}
         </div>
+      ) : (
+        <p className="text-xs text-amber-600 dark:text-amber-400 italic">
+          * Please select at least one participant to split this bill.
+        </p>
       )}
     </div>
   );

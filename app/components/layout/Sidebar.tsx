@@ -1,11 +1,30 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 
 export default function Sidebar() {
   const [purchaseOpen, setPurchaseOpen] = useState(false);
   const [inventoryOpen, setInventoryOpen] = useState(false);
+  const [userRole, setUserRole] = useState<string | null>(null);
+
+  useEffect(() => {
+    fetchUserProfile();
+  }, []);
+
+  const fetchUserProfile = async () => {
+    try {
+      const res = await fetch("/api/auth/me");
+      if (res.ok) {
+        const data = await res.json();
+        if (data.success && data.user) {
+          setUserRole(data.user.role);
+        }
+      }
+    } catch (error) {
+      console.error("Error fetching user profile in sidebar:", error);
+    }
+  };
 
   return (
     <aside className="min-h-screen w-64 bg-gray-900 text-white">
@@ -15,7 +34,6 @@ export default function Sidebar() {
 
       <nav className="p-4">
         <ul className="space-y-2">
-
           {/* Dashboard */}
           <li>
             <Link
@@ -83,15 +101,17 @@ export default function Sidebar() {
             )}
           </li>
 
-          {/* Users */}
-          <li>
-            <Link
-              href="/dashboard/users"
-              className="block rounded-md px-3 py-2 hover:bg-gray-700"
-            >
-              👥 Users
-            </Link>
-          </li>
+          {/* Users - Only visible to ADMIN */}
+          {userRole === "ADMIN" && (
+            <li>
+              <Link
+                href="/dashboard/users"
+                className="block rounded-md px-3 py-2 hover:bg-gray-700"
+              >
+                👥 Users
+              </Link>
+            </li>
+          )}
 
           {/* Reports */}
           <li>
@@ -112,7 +132,6 @@ export default function Sidebar() {
               ⚙️ Settings
             </Link>
           </li>
-
         </ul>
       </nav>
     </aside>

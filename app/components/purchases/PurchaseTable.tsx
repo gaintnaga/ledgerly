@@ -9,6 +9,8 @@ export interface Purchase {
   store?: string;
   paidBy?: string | { id: string; name: string; email: string };
   paidById?: string;
+  createdById?: string;
+  createdBy?: string | { id: string; name: string; email: string };
   totalAmount?: number;
   amount?: number;
   purchaseDate?: string;
@@ -17,12 +19,14 @@ export interface Purchase {
 
 interface PurchaseTableProps {
   purchases: Purchase[];
+  currentUser?: { id: string; role: string } | null;
   onEdit: (purchase: Purchase) => void;
   onDelete: (purchase: Purchase) => void;
 }
 
 export default function PurchaseTable({
   purchases,
+  currentUser,
   onEdit,
   onDelete,
 }: PurchaseTableProps) {
@@ -61,6 +65,16 @@ export default function PurchaseTable({
                 ? new Date(purchase.purchaseDate).toLocaleDateString()
                 : purchase.date || "—";
 
+              const creatorId =
+                purchase.createdById ||
+                (typeof purchase.createdBy === "object" ? purchase.createdBy?.id : undefined);
+
+              // ADMIN can edit/delete all; USER can only edit/delete their own purchases
+              const canModify =
+                !currentUser ||
+                currentUser.role === "ADMIN" ||
+                (creatorId && currentUser.id === creatorId);
+
               return (
                 <tr key={purchase.id} className="hover:bg-gray-50/50 dark:hover:bg-gray-800/50">
                   <td className="px-4 py-4 font-semibold text-gray-900 dark:text-white">
@@ -87,19 +101,27 @@ export default function PurchaseTable({
                         View
                       </Link>
 
-                      <button
-                        onClick={() => onEdit(purchase)}
-                        className="rounded bg-yellow-500 px-3 py-1 text-sm text-white hover:bg-yellow-600 transition"
-                      >
-                        Edit
-                      </button>
+                      {canModify ? (
+                        <>
+                          <button
+                            onClick={() => onEdit(purchase)}
+                            className="rounded bg-yellow-500 px-3 py-1 text-sm text-white hover:bg-yellow-600 transition"
+                          >
+                            Edit
+                          </button>
 
-                      <button
-                        onClick={() => onDelete(purchase)}
-                        className="rounded bg-red-600 px-3 py-1 text-sm text-white hover:bg-red-700 transition"
-                      >
-                        Delete
-                      </button>
+                          <button
+                            onClick={() => onDelete(purchase)}
+                            className="rounded bg-red-600 px-3 py-1 text-sm text-white hover:bg-red-700 transition"
+                          >
+                            Delete
+                          </button>
+                        </>
+                      ) : (
+                        <span className="text-xs text-gray-400 italic self-center px-1" title="Only the creator or admin can edit or delete this purchase">
+                          View Only
+                        </span>
+                      )}
                     </div>
                   </td>
                 </tr>

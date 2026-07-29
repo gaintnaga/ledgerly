@@ -44,22 +44,35 @@ export async function GET(req: NextRequest) {
       );
     }
 
-    const users = await prisma.user.findMany({
-      select: {
-        id: true,
-        name: true,
-        email: true,
-      },
-      orderBy: {
-        name: "asc",
-      },
-    });
+  const users = await prisma.user.findMany({
+    select: {
+      id: true,
+      name: true,
+      email: true,
+      role: true,
+      provider: true,
+      profileImage: true,
 
-    return NextResponse.json(users);
-  } catch (error) {
+      isActive: true,
+      approvedAt: true,
+      lastLogin: true,
+
+      createdAt: true,
+    },
+    orderBy: {
+      createdAt: "desc",
+    },
+  });
+
+    return NextResponse.json({success: true , users});
+  } catch (error: any) {
     console.error("Error fetching users:", error);
     return NextResponse.json(
-      { success: false, message: "Unable to fetch users" },
+      {
+        success: false,
+        message: "Unable to fetch users",
+        error: error?.message || String(error),
+      },
       { status: 500 }
     );
   }

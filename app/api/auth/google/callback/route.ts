@@ -62,7 +62,7 @@ export async function GET(request: NextRequest) {
           profileImage: data.picture ?? null
         }
       });
-    } else if (!user.googleId){
+    } else if (!user.googleId) {
       user = await prisma.user.update({
         where: {
           id: user.id,
@@ -70,10 +70,20 @@ export async function GET(request: NextRequest) {
         data: {
           provider: AuthProvider.GOOGLE,
           googleId: data.id ?? null,
-          profileImage: data.picture ?? null
-        }
+          profileImage: data.picture ?? null,
+        },
       });
     }
+
+    if (!user.isActive) {
+      return NextResponse.redirect(new URL("/deactivated", request.url));
+    }
+
+    // Update lastLogin timestamp
+    await prisma.user.update({
+      where: { id: user.id },
+      data: { lastLogin: new Date() },
+    });
 
     const secret = new TextEncoder().encode(process.env.JWT_SECRET);
     const token = await new SignJWT({

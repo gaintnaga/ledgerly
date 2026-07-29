@@ -102,13 +102,13 @@ export default function PurchaseForm({
       const userList: User[] = Array.isArray(data) ? data : data.users || [];
       setUsers(userList);
 
-      // Auto-select all users if creating new purchase or no participants were selected
+      // Only set participants if existing purchase or not set
       setParticipantIds((prev) => {
         if (prev.length > 0) return prev;
         if (purchase?.participants && purchase.participants.length > 0) {
           return purchase.participants.map((p) => p.userId);
         }
-        return userList.map((u) => u.id);
+        return [];
       });
 
       // Default paidById to first user if not set

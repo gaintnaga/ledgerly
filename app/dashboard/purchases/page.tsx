@@ -8,15 +8,38 @@ import PurchaseTable, {
 import PurchaseModal from "@/app/components/purchases/PurchaseModal";
 import PurchaseForm from "@/app/components/purchases/PurchaseForm";
 
+interface CurrentUser {
+  id: string;
+  name: string;
+  email: string;
+  role: string;
+}
+
 export default function PurchasesPage() {
   const [open, setOpen] = useState(false);
   const [selectedPurchase, setSelectedPurchase] = useState<Purchase | null>(null);
   const [purchases, setPurchases] = useState<Purchase[]>([]);
+  const [currentUser, setCurrentUser] = useState<CurrentUser | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    fetchCurrentUser();
     fetchPurchases();
   }, []);
+
+  const fetchCurrentUser = async () => {
+    try {
+      const res = await fetch("/api/auth/me");
+      if (res.ok) {
+        const data = await res.json();
+        if (data.success && data.user) {
+          setCurrentUser(data.user);
+        }
+      }
+    } catch (error) {
+      console.error("Error fetching current user profile:", error);
+    }
+  };
 
   const fetchPurchases = async () => {
     try {
@@ -58,10 +81,12 @@ export default function PurchasesPage() {
         method: "DELETE",
       });
 
-      if (res.ok) {
+      const data = await res.json();
+
+      if (res.ok && data.success) {
         setPurchases((prev) => prev.filter((item) => item.id !== purchase.id));
       } else {
-        alert("Failed to delete purchase");
+        alert(data.message || "Failed to delete purchase. You can only delete purchases created by you.");
       }
     } catch (error) {
       console.error("Error deleting purchase:", error);
@@ -80,6 +105,7 @@ export default function PurchasesPage() {
       ) : (
         <PurchaseTable
           purchases={purchases}
+          currentUser={currentUser}
           onEdit={handleEdit}
           onDelete={handleDelete}
         />
