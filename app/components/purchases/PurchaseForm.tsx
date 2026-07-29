@@ -45,6 +45,7 @@ export default function PurchaseForm({
           id: Date.now(),
           itemName: "",
           quantity: 1,
+          unit: "pcs",
           unitPrice: 0,
         },
       ];
@@ -56,6 +57,7 @@ export default function PurchaseForm({
         id: item.id || Date.now() + index,
         itemName: item.itemName || "",
         quantity: qty,
+        unit: item.unit || "pcs",
         unitPrice: priceVal,
         price: priceVal,
         total: Number(item.total ?? qty * priceVal),
@@ -87,26 +89,6 @@ export default function PurchaseForm({
   });
 
   useEffect(() => {
-    if (purchase) {
-      setFormData({
-        title: purchase.title ?? "",
-        storeName: purchase.storeName ?? "",
-        purchaseDate: purchase.purchaseDate
-          ? new Date(purchase.purchaseDate).toISOString().split("T")[0]
-          : new Date().toISOString().split("T")[0],
-        paidById: getPayerId(purchase),
-        description: purchase.description ?? "",
-      });
-
-      setItems(formatItems(purchase.items));
-
-      if (purchase.participants) {
-        setParticipantIds(purchase.participants.map((p) => p.userId));
-      }
-    }
-  }, [purchase]);
-
-  useEffect(() => {
     fetchUsers();
   }, []);
 
@@ -120,14 +102,44 @@ export default function PurchaseForm({
       const userList: User[] = Array.isArray(data) ? data : data.users || [];
       setUsers(userList);
 
-      // Default all users as participants if creating new purchase and none selected
-      if (!purchase?.participants && userList.length > 0 && participantIds.length === 0) {
-        setParticipantIds(userList.map((u) => u.id));
-      }
+      // Auto-select all users if creating new purchase or no participants were selected
+      setParticipantIds((prev) => {
+        if (prev.length > 0) return prev;
+        if (purchase?.participants && purchase.participants.length > 0) {
+          return purchase.participants.map((p) => p.userId);
+        }
+        return userList.map((u) => u.id);
+      });
+
+      // Default paidById to first user if not set
+      setFormData((prev) => ({
+        ...prev,
+        paidById: prev.paidById || (userList.length > 0 ? userList[0].id : ""),
+      }));
     } catch (error) {
       console.error("Error fetching users:", error);
     }
   };
+
+  useEffect(() => {
+    if (purchase) {
+      setFormData({
+        title: purchase.title ?? "",
+        storeName: purchase.storeName ?? "",
+        purchaseDate: purchase.purchaseDate
+          ? new Date(purchase.purchaseDate).toISOString().split("T")[0]
+          : new Date().toISOString().split("T")[0],
+        paidById: getPayerId(purchase),
+        description: purchase.description ?? "",
+      });
+
+      setItems(formatItems(purchase.items));
+
+      if (purchase.participants && purchase.participants.length > 0) {
+        setParticipantIds(purchase.participants.map((p) => p.userId));
+      }
+    }
+  }, [purchase]);
 
   const handleChange = (
     e: React.ChangeEvent<
@@ -147,6 +159,7 @@ export default function PurchaseForm({
         id: Date.now(),
         itemName: "",
         quantity: 1,
+        unit: "pcs",
         unitPrice: 0,
       },
     ]);
@@ -166,7 +179,7 @@ export default function PurchaseForm({
   };
 
   const totalAmount = items.reduce(
-    (sum, item) => sum + (item.quantity || 0) * Number(item.unitPrice ?? item.price ?? 0),
+    (sum, item) => sum + (Number(item.quantity) || 0) * Number(item.unitPrice ?? item.price ?? 0),
     0
   );
 
@@ -200,6 +213,7 @@ export default function PurchaseForm({
           return {
             itemName: item.itemName,
             quantity: qty,
+            unit: item.unit || "pcs",
             unitPrice: priceVal,
             price: priceVal,
             total: qty * priceVal,
@@ -207,7 +221,8 @@ export default function PurchaseForm({
         }),
       };
 
-      const response = await fetch("/api/purchases", {
+      const endpoint = purchase?.id ? `/api/purchases/${purchase.id}` : "/api/purchases";
+      const response = await fetch(endpoint, {
         method: purchase ? "PUT" : "POST",
         headers: {
           "Content-Type": "application/json",
@@ -216,12 +231,24 @@ export default function PurchaseForm({
       });
 
       if (!response.ok) {
-        const errData = await response.json();
-        throw new Error(errData.message || "Failed to save purchase");
+        let errorMessage = "Failed to save purchase";
+        try {
+          const errData = await response.json();
+          errorMessage = errData.message || errorMessage;
+        } catch {
+          errorMessage = `Server Error (${response.status}: ${response.statusText})`;
+        }
+        throw new Error(errorMessage);
       }
 
-      const result = await response.json();
-      console.log("Purchase saved:", result);
+      let result = {};
+      try {
+        result = await response.json();
+      } catch {
+        // empty JSON response
+      }
+
+      console.log("Purchase saved successfully:", result);
 
       alert(
         purchase
@@ -230,7 +257,7 @@ export default function PurchaseForm({
       );
       onCancel?.();
     } catch (error: any) {
-      console.error(error);
+      console.error("Save purchase error:", error);
       alert(error.message || "Something went wrong while saving purchase");
     } finally {
       setLoading(false);
