@@ -94,9 +94,11 @@ export async function GET(request: NextRequest) {
       .setProtectedHeader({ alg: "HS256" })
       .setExpirationTime("1d")
       .sign(secret);
-    const response = NextResponse.redirect(
-      new URL("/dashboard", request.url)
-    );
+    const baseUrl =
+      process.env.APP_URL || request.nextUrl.origin;  
+      const response = NextResponse.redirect(
+        `${baseUrl}/dashboard`
+      );
 
     response.cookies.set({
       name: "token",
