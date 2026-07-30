@@ -4,6 +4,7 @@ import { use, useEffect, useState } from "react";
 import Link from "next/link";
 import { Card, CardContent, CardHeader, CardTitle } from "@/app/components/ui/Card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/app/components/ui/Table";
+import LoadingSpinner from "@/app/components/ui/LoadingSpinner";
 
 interface PageProps {
   params: Promise<{ id: string }>;
@@ -86,9 +87,7 @@ export default function PurchaseDetailPage({ params }: PageProps) {
           </Link>
           <span className="font-mono text-xs text-gray-500">ID: {purchaseId}</span>
         </div>
-        <div className="rounded-xl border bg-white p-8 text-center text-gray-500 shadow-sm dark:border-gray-800 dark:bg-gray-900">
-          Loading purchase details...
-        </div>
+        <LoadingSpinner label="Loading purchase details..." size="lg" />
       </div>
     );
   }

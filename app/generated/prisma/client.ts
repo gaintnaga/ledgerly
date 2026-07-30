@@ -61,3 +61,13 @@ export type PurchaseParticipant = Prisma.PurchaseParticipantModel
  * 
  */
 export type PurchaseItem = Prisma.PurchaseItemModel
+/**
+ * Model Inventory
+ * 
+ */
+export type Inventory = Prisma.InventoryModel
+/**
+ * Model Category
+ * 
+ */
+export type Category = Prisma.CategoryModel

@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Card, CardContent, CardHeader, CardTitle } from "@/app/components/ui/Card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/app/components/ui/Table";
 import UserAvatar from "@/app/components/ui/UserAvatar";
+import LoadingSpinner from "@/app/components/ui/LoadingSpinner";
 
 interface UserMember {
   id: string;
@@ -180,11 +181,7 @@ export default function UsersPage() {
   };
 
   if (loadingProfile) {
-    return (
-      <div className="flex items-center justify-center min-h-[50vh] text-gray-500">
-        Checking permissions...
-      </div>
-    );
+    return <LoadingSpinner label="Checking permissions & loading users..." fullPage size="lg" />;
   }
 
   if (currentRole !== "ADMIN") {

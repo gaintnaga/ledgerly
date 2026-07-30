@@ -23,80 +23,112 @@ enum AuthProvider {
 }
 
 model User {
-  id String @id @default(cuid())
-  name String
-  email String @unique
-  password String?
-  provider     AuthProvider  @default(CREDENTIALS)
-  googleId     String?       @unique
+  id           String       @id @default(cuid())
+  name         String
+  email        String       @unique
+  password     String?
+  provider     AuthProvider @default(CREDENTIALS)
+  googleId     String?      @unique
   profileImage String?
 
-  isActive     Boolean @default(false)
+  isActive Boolean @default(false)
 
-  approvedBy   String?
-  approvedAt   DateTime?
+  approvedBy String?
+  approvedAt DateTime?
 
-  lastLogin    DateTime?  
-  
-  purchasesPaid  Purchase[] @relation("PaidBy")
+  lastLogin DateTime?
+
+  purchasesPaid    Purchase[] @relation("PaidBy")
   purchasesCreated Purchase[] @relation("CreatedBy")
 
   purchaseParticipants PurchaseParticipant[]
 
-  role Role @default(USER)
+  role      Role     @default(USER)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  approver     User? @relation("UserApprover", fields: [approvedBy], references: [id])
+  approver      User?  @relation("UserApprover", fields: [approvedBy], references: [id])
   approvedUsers User[] @relation("UserApprover")
 }
 
 model Purchase {
-  id String @id @default(cuid())
-  title String
-  description String?
-  totalAmount Decimal @db.Decimal(10,2)
+  id           String   @id @default(cuid())
+  title        String
+  description  String?
+  totalAmount  Decimal  @db.Decimal(10, 2)
   purchaseDate DateTime @default(now())
-  storeName String?
+  storeName    String?
   receiptImage String?
 
   paidById String
-  paidBy User @relation("PaidBy", fields: [paidById], references: [id])
+  paidBy   User   @relation("PaidBy", fields: [paidById], references: [id])
 
   createdById String
-  createdBy User @relation("CreatedBy", fields: [createdById], references: [id])
+  createdBy   User   @relation("CreatedBy", fields: [createdById], references: [id])
 
   participants PurchaseParticipant[]
 
   items PurchaseItem[]
 
   createdAt DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+  updatedAt DateTime @updatedAt
 }
 
 model PurchaseParticipant {
-  id String @id @default(cuid())
+  id         String   @id @default(cuid())
   purchaseId String
-  purchase Purchase @relation(fields : [purchaseId], references : [id] , onDelete : Cascade)
+  purchase   Purchase @relation(fields: [purchaseId], references: [id], onDelete: Cascade)
 
   userId String
-  user User @relation(fields : [userId] , references : [id])
+  user   User   @relation(fields: [userId], references: [id])
 
-  shareAmount Decimal @db.Decimal(10,2)
+  shareAmount Decimal @db.Decimal(10, 2)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
 
 model PurchaseItem {
-  id String @id @default(cuid())
+  id         String   @id @default(cuid())
   purchaseId String
-  purchase Purchase @relation(fields: [purchaseId], references : [id] , onDelete:Cascade)
-  itemName String
-  quantity Decimal @db.Decimal(10,2)
-  unit String?
-  price Decimal @db.Decimal(10,2)
-  total Decimal @db.Decimal(10,2)
+  purchase   Purchase @relation(fields: [purchaseId], references: [id], onDelete: Cascade)
+  itemName   String
+  quantity   Decimal  @db.Decimal(10, 2)
+  unit       String?
+  price      Decimal  @db.Decimal(10, 2)
+  total      Decimal  @db.Decimal(10, 2)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Inventory {
+  id String @id @default(cuid())
+
+  name String
+
+  categoryId String
+  category   Category @relation(fields: [categoryId], references: [id])
+
+  quantity Decimal @db.Decimal(10, 2)
+  unit     String
+
+  unitPrice    Decimal @db.Decimal(10, 2)
+  minimumStock Decimal @default(1)
+
+  notes String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Category {
+  id String @id @default(cuid())
+
+  name        String  @unique
+  description String?
+
+  inventory Inventory[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

@@ -7,6 +7,7 @@ import PurchaseTable, {
 } from "@/app/components/purchases/PurchaseTable";
 import PurchaseModal from "@/app/components/purchases/PurchaseModal";
 import PurchaseForm from "@/app/components/purchases/PurchaseForm";
+import LoadingSpinner from "@/app/components/ui/LoadingSpinner";
 
 interface CurrentUser {
   id: string;
@@ -99,9 +100,7 @@ export default function PurchasesPage() {
       <PurchaseHeader onAdd={handleAdd} />
 
       {loading ? (
-        <div className="rounded-lg border bg-white p-8 text-center text-gray-500 shadow-sm dark:border-gray-800 dark:bg-gray-900">
-          Loading purchases...
-        </div>
+        <LoadingSpinner label="Loading purchases..." size="lg" />
       ) : (
         <PurchaseTable
           purchases={purchases}
