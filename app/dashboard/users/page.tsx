@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Card, CardContent, CardHeader, CardTitle } from "@/app/components/ui/Card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/app/components/ui/Table";
+import UserAvatar from "@/app/components/ui/UserAvatar";
 
 interface UserMember {
   id: string;
@@ -321,17 +322,11 @@ export default function UsersPage() {
                 {/* User Name & Profile Image */}
                 <TableCell>
                   <div className="flex items-center gap-3">
-                    {user.profileImage ? (
-                      <img
-                        src={user.profileImage}
-                        alt={user.name}
-                        className="h-9 w-9 rounded-full object-cover ring-2 ring-indigo-500/20"
-                      />
-                    ) : (
-                      <div className="flex h-9 w-9 items-center justify-center rounded-full bg-indigo-100 font-semibold text-indigo-700 dark:bg-indigo-900/40 dark:text-indigo-300">
-                        {getInitial(user.name)}
-                      </div>
-                    )}
+                    <UserAvatar
+                      name={user.name}
+                      profileImage={user.profileImage}
+                      role={user.role}
+                    />
                     <div>
                       <div className="font-semibold text-gray-900 dark:text-white">
                         {user.name}
