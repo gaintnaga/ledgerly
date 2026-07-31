@@ -31,6 +31,13 @@ export default function Sidebar({ isVisible, onClose }: SidebarProps) {
     }
   };
 
+  // Only close sidebar on link click if screen width is mobile (< 768px)
+  const handleLinkClick = () => {
+    if (typeof window !== "undefined" && window.innerWidth < 768) {
+      onClose();
+    }
+  };
+
   return (
     <>
       {/* Mobile Backdrop Overlay */}
@@ -49,7 +56,7 @@ export default function Sidebar({ isVisible, onClose }: SidebarProps) {
         {isVisible && (
           <div className="w-64 flex flex-col h-full">
             <div className="flex h-16 items-center justify-between border-b border-gray-800 px-6 text-xl font-bold">
-              <Link href="/dashboard" onClick={onClose}>
+              <Link href="/dashboard" onClick={handleLinkClick}>
                 Ledgerly
               </Link>
               <button
@@ -66,7 +73,7 @@ export default function Sidebar({ isVisible, onClose }: SidebarProps) {
                 <li>
                   <Link
                     href="/dashboard"
-                    onClick={onClose}
+                    onClick={handleLinkClick}
                     className="block rounded-md px-3 py-2 text-sm hover:bg-gray-800 transition"
                   >
                     📊 Dashboard
@@ -88,7 +95,7 @@ export default function Sidebar({ isVisible, onClose }: SidebarProps) {
                       <li>
                         <Link
                           href="/dashboard/purchases"
-                          onClick={onClose}
+                          onClick={handleLinkClick}
                           className="block rounded-md px-2 py-1.5 text-xs text-gray-300 hover:bg-gray-800"
                         >
                           All Purchases
@@ -113,7 +120,7 @@ export default function Sidebar({ isVisible, onClose }: SidebarProps) {
                       <li>
                         <Link
                           href="/dashboard/inventory"
-                          onClick={onClose}
+                          onClick={handleLinkClick}
                           className="block rounded-md px-2 py-1.5 text-xs text-gray-300 hover:bg-gray-800"
                         >
                           Stock
@@ -123,7 +130,7 @@ export default function Sidebar({ isVisible, onClose }: SidebarProps) {
                       <li>
                         <Link
                           href="/dashboard/inventory/categories"
-                          onClick={onClose}
+                          onClick={handleLinkClick}
                           className="block rounded-md px-2 py-1.5 text-xs text-gray-300 hover:bg-gray-800"
                         >
                           Categories
@@ -138,7 +145,7 @@ export default function Sidebar({ isVisible, onClose }: SidebarProps) {
                   <li>
                     <Link
                       href="/dashboard/users"
-                      onClick={onClose}
+                      onClick={handleLinkClick}
                       className="block rounded-md px-3 py-2 text-sm hover:bg-gray-800 transition"
                     >
                       👥 Users
@@ -150,7 +157,7 @@ export default function Sidebar({ isVisible, onClose }: SidebarProps) {
                 <li>
                   <Link
                     href="/dashboard/reports"
-                    onClick={onClose}
+                    onClick={handleLinkClick}
                     className="block rounded-md px-3 py-2 text-sm hover:bg-gray-800 transition"
                   >
                     📈 Reports
@@ -161,7 +168,7 @@ export default function Sidebar({ isVisible, onClose }: SidebarProps) {
                 <li>
                   <Link
                     href="/dashboard/settings"
-                    onClick={onClose}
+                    onClick={handleLinkClick}
                     className="block rounded-md px-3 py-2 text-sm hover:bg-gray-800 transition"
                   >
                     ⚙️ Settings
