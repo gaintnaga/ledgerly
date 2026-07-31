@@ -1,187 +1,364 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/app/components/ui/Card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/app/components/ui/Table";
+import LoadingSpinner from "@/app/components/ui/LoadingSpinner";
+
+interface User {
+  id: string;
+  name: string;
+  email: string;
+}
+
+interface PurchaseParticipant {
+  id: string;
+  userId: string;
+  shareAmount: number | string;
+  user?: User;
+}
+
+interface Purchase {
+  id: string;
+  title: string;
+  storeName?: string | null;
+  totalAmount: number | string;
+  purchaseDate: string;
+  paidById: string;
+  paidBy?: User;
+  participants?: PurchaseParticipant[];
+}
+
+interface InventoryItem {
+  id: string;
+  name: string;
+  quantity: number | string;
+  unitPrice: number | string;
+}
+
+interface ParticipantBalance {
+  id: string;
+  name: string;
+  email: string;
+  totalPaid: number;
+  shareOwed: number;
+  netBalance: number;
+}
 
 export default function ReportsPage() {
-  const [timeframe, setTimeframe] = useState("THIS_MONTH");
+  const [purchases, setPurchases] = useState<Purchase[]>([]);
+  const [inventory, setInventory] = useState<InventoryItem[]>([]);
+  const [users, setUsers] = useState<User[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const monthlyBreakdown = [
-    { category: "Groceries & Supplies", spent: 14500, percentage: "42%" },
-    { category: "Inventory Restock", spent: 11200, percentage: "33%" },
-    { category: "Utilities & Fuel", spent: 5400, percentage: "16%" },
-    { category: "Miscellaneous", spent: 3100, percentage: "9%" },
-  ];
+  useEffect(() => {
+    fetchReportData();
+  }, []);
 
-  const userContributions = [
-    { name: "Amit Kumar", paid: 18600, splitShare: 17100, balance: "+ ₹1,500" },
-    { name: "Rahul Sharma", paid: 12800, splitShare: 14300, balance: "- ₹1,500" },
-    { name: "Priya Patel", paid: 2800, splitShare: 2800, balance: "Settled" },
-  ];
+  const fetchReportData = async () => {
+    setLoading(true);
+    try {
+      const [purRes, invRes, userRes] = await Promise.all([
+        fetch("/api/purchases"),
+        fetch("/api/inventory"),
+        fetch("/api/users"),
+      ]);
+
+      const purData = await purRes.json();
+      const invData = await invRes.json();
+      const userData = await userRes.json();
+
+      if (purData.success && Array.isArray(purData.purchases)) {
+        setPurchases(purData.purchases);
+      }
+      if (invData.success && Array.isArray(invData.data)) {
+        setInventory(invData.data);
+      }
+
+      if (Array.isArray(userData)) {
+        setUsers(userData);
+      } else if (userData.success && Array.isArray(userData.users)) {
+        setUsers(userData.users);
+      }
+    } catch (error) {
+      console.error("Error fetching report data:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // 1. Total Purchases Expense
+  const totalPurchaseExpense = purchases.reduce(
+    (sum, p) => sum + (Number(p.totalAmount) || 0),
+    0
+  );
+
+  // 2. Total Inventory Valuation
+  const totalInventoryValue = inventory.reduce((sum, item) => {
+    const qty = Number(item.quantity) || 0;
+    const price = Number(item.unitPrice) || 0;
+    return sum + qty * price;
+  }, 0);
+
+  // 3. Store Breakdown
+  const storeMap: Record<string, number> = {};
+  purchases.forEach((p) => {
+    const store = p.storeName?.trim() || "General / Unspecified";
+    const amount = Number(p.totalAmount) || 0;
+    storeMap[store] = (storeMap[store] || 0) + amount;
+  });
+
+  const storeBreakdown = Object.entries(storeMap)
+    .map(([store, spent]) => ({
+      store,
+      spent,
+      percentage: totalPurchaseExpense > 0 ? ((spent / totalPurchaseExpense) * 100).toFixed(1) : "0",
+    }))
+    .sort((a, b) => b.spent - a.spent);
+
+  // 4. Participant Balance Calculations
+  const userBalanceMap: Record<string, ParticipantBalance> = {};
+
+  users.forEach((u) => {
+    userBalanceMap[u.id] = {
+      id: u.id,
+      name: u.name,
+      email: u.email,
+      totalPaid: 0,
+      shareOwed: 0,
+      netBalance: 0,
+    };
+  });
+
+  purchases.forEach((p) => {
+    const amount = Number(p.totalAmount) || 0;
+    if (p.paidById && userBalanceMap[p.paidById]) {
+      userBalanceMap[p.paidById].totalPaid += amount;
+    }
+
+    if (Array.isArray(p.participants)) {
+      p.participants.forEach((part) => {
+        const share = Number(part.shareAmount) || 0;
+        if (part.userId && userBalanceMap[part.userId]) {
+          userBalanceMap[part.userId].shareOwed += share;
+        }
+      });
+    }
+  });
+
+  const participantBalances = Object.values(userBalanceMap).map((bal) => ({
+    ...bal,
+    netBalance: bal.totalPaid - bal.shareOwed,
+  }));
+
+  const handleExportPDF = () => {
+    window.print();
+  };
 
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Reports & Financial Analytics</h1>
-          <p className="text-sm text-gray-500">Insights into store expenses, inventory turnover, and balances.</p>
+          <h1 className="text-2xl font-bold text-gray-900">Financial Reports & Analytics</h1>
+          <p className="text-sm text-gray-500">
+            Real-time overview of purchases, inventory values, and participant balances.
+          </p>
         </div>
 
-        <div className="flex items-center gap-3">
-          <select
-            value={timeframe}
-            onChange={(e) => setTimeframe(e.target.value)}
-            className="rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none dark:border-gray-700 dark:bg-gray-800 dark:text-white"
-          >
-            <option value="THIS_MONTH">This Month (July 2026)</option>
-            <option value="LAST_MONTH">Last Month (June 2026)</option>
-            <option value="THIS_QUARTER">Q3 2026</option>
-            <option value="THIS_YEAR">Year 2026</option>
-          </select>
+        <button
+          onClick={handleExportPDF}
+          className="inline-flex items-center justify-center rounded-lg bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white shadow hover:bg-indigo-700 transition print:hidden"
+        >
+          Print / Export Report
+        </button>
+      </div>
 
-          <button
-            onClick={() => alert("Report exported successfully as PDF")}
-            className="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow hover:bg-indigo-700 transition"
-          >
-            Export Report
-          </button>
+      {loading ? (
+        <div className="flex h-48 items-center justify-center bg-white rounded-xl border border-gray-200">
+          <LoadingSpinner />
         </div>
-      </div>
-
-      {/* Summary Cards */}
-      <div className="grid gap-4 md:grid-cols-4">
-        <Card>
-          <CardHeader>
-            <CardTitle>Total Expenses</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-3xl font-bold text-gray-900 dark:text-white">₹34,200</div>
-            <p className="text-xs text-emerald-600 mt-1">↓ 8% lower than last month</p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <CardTitle>Total Purchases</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-3xl font-bold text-indigo-600">28 Logged</div>
-            <p className="text-xs text-gray-500 mt-1">Average ₹1,221 per receipt</p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <CardTitle>Active Inventory Valuation</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-3xl font-bold text-emerald-600">₹48,900</div>
-            <p className="text-xs text-gray-500 mt-1">Across 85 stock items</p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <CardTitle>Pending Settlements</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-3xl font-bold text-amber-600">₹1,500</div>
-            <p className="text-xs text-gray-500 mt-1">Unsettled split balances</p>
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* Expense Breakdown & Progress Bar Visualizer */}
-      <div className="grid gap-6 md:grid-cols-2">
-        <Card>
-          <CardHeader>
-            <CardTitle>Category Wise Expenses</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            {monthlyBreakdown.map((item) => (
-              <div key={item.category} className="space-y-1">
-                <div className="flex justify-between text-sm font-medium text-gray-700 dark:text-gray-300">
-                  <span>{item.category}</span>
-                  <span>₹{item.spent.toLocaleString()} ({item.percentage})</span>
+      ) : (
+        <>
+          {/* Summary Cards */}
+          <div className="grid gap-4 md:grid-cols-4">
+            <Card>
+              <CardHeader>
+                <CardTitle>Total Purchases</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-3xl font-bold text-gray-900">
+                  ₹{totalPurchaseExpense.toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                 </div>
-                <div className="h-2 w-full overflow-hidden rounded-full bg-gray-100 dark:bg-gray-800">
-                  <div
-                    className="h-full rounded-full bg-indigo-600"
-                    style={{ width: item.percentage }}
-                  ></div>
+                <p className="text-xs text-gray-500 mt-1">{purchases.length} total receipt logs</p>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>Inventory Valuation</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-3xl font-bold text-emerald-600">
+                  ₹{totalInventoryValue.toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                 </div>
-              </div>
-            ))}
-          </CardContent>
-        </Card>
+                <p className="text-xs text-gray-500 mt-1">Across {inventory.length} stock items</p>
+              </CardContent>
+            </Card>
 
-        <Card>
-          <CardHeader>
-            <CardTitle>Quick Insights</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-3">
-            <div className="rounded-lg bg-indigo-50 p-4 dark:bg-indigo-950/30">
-              <h4 className="text-sm font-bold text-indigo-900 dark:text-indigo-300">💡 Top Spend Store</h4>
-              <p className="mt-1 text-xs text-indigo-700 dark:text-indigo-400">
-                DMart Mega Store accounts for 58% of all store purchases this month.
-              </p>
-            </div>
+            <Card>
+              <CardHeader>
+                <CardTitle>Average Receipt</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-3xl font-bold text-indigo-600">
+                  ₹
+                  {purchases.length > 0
+                    ? (totalPurchaseExpense / purchases.length).toLocaleString("en-IN", {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2,
+                      })
+                    : "0.00"}
+                </div>
+                <p className="text-xs text-gray-500 mt-1">Average per transaction</p>
+              </CardContent>
+            </Card>
 
-            <div className="rounded-lg bg-emerald-50 p-4 dark:bg-emerald-950/30">
-              <h4 className="text-sm font-bold text-emerald-900 dark:text-emerald-300">📦 Inventory Health</h4>
-              <p className="mt-1 text-xs text-emerald-700 dark:text-emerald-400">
-                Stock replenishment efficiency improved by 14% over Q2.
-              </p>
-            </div>
+            <Card>
+              <CardHeader>
+                <CardTitle>Registered Members</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-3xl font-bold text-blue-600">{users.length}</div>
+                <p className="text-xs text-gray-500 mt-1">Active ledger participants</p>
+              </CardContent>
+            </Card>
+          </div>
 
-            <div className="rounded-lg bg-amber-50 p-4 dark:bg-amber-950/30">
-              <h4 className="text-sm font-bold text-amber-900 dark:text-amber-300">⚖️ Pending Reconciliations</h4>
-              <p className="mt-1 text-xs text-amber-700 dark:text-amber-400">
-                Rahul Sharma has 1 pending split reimbursement of ₹1,500 due to Amit Kumar.
-              </p>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
+          {/* Store Wise Expense Breakdown */}
+          <div className="grid gap-6 md:grid-cols-2">
+            <Card>
+              <CardHeader>
+                <CardTitle>Store Expense Distribution</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                {storeBreakdown.length === 0 ? (
+                  <p className="text-xs text-gray-500 italic">No purchase data available.</p>
+                ) : (
+                  storeBreakdown.map((item) => (
+                    <div key={item.store} className="space-y-1">
+                      <div className="flex justify-between text-sm font-medium text-gray-700">
+                        <span>{item.store}</span>
+                        <span>
+                          ₹{item.spent.toLocaleString("en-IN", { minimumFractionDigits: 2 })} ({item.percentage}%)
+                        </span>
+                      </div>
+                      <div className="h-2 w-full overflow-hidden rounded-full bg-gray-100">
+                        <div
+                          className="h-full rounded-full bg-indigo-600"
+                          style={{ width: `${item.percentage}%` }}
+                        ></div>
+                      </div>
+                    </div>
+                  ))
+                )}
+              </CardContent>
+            </Card>
 
-      {/* User Split Ledger Table */}
-      <div className="space-y-3">
-        <h2 className="text-lg font-bold text-gray-900 dark:text-white">Participant Balance Summary</h2>
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>User / Member</TableHead>
-              <TableHead>Total Paid Out</TableHead>
-              <TableHead>Fair Share Owed</TableHead>
-              <TableHead className="text-right">Net Settlement Balance</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {userContributions.map((u) => (
-              <TableRow key={u.name}>
-                <TableCell className="font-semibold text-gray-900 dark:text-white">{u.name}</TableCell>
-                <TableCell className="font-medium text-emerald-600">₹{u.paid.toLocaleString()}</TableCell>
-                <TableCell className="font-medium text-gray-600 dark:text-gray-400">₹{u.splitShare.toLocaleString()}</TableCell>
-                <TableCell className="text-right font-bold">
-                  <span
-                    className={`inline-flex items-center rounded-md px-2.5 py-1 text-xs font-semibold ${
-                      u.balance.startsWith("+")
-                        ? "bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400"
-                        : u.balance.startsWith("-")
-                        ? "bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400"
-                        : "bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300"
-                    }`}
-                  >
-                    {u.balance}
-                  </span>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </div>
+            <Card>
+              <CardHeader>
+                <CardTitle>Summary Insights</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                <div className="rounded-lg bg-indigo-50 p-4">
+                  <h4 className="text-sm font-bold text-indigo-900">💡 Top Spending Vendor</h4>
+                  <p className="mt-1 text-xs text-indigo-700">
+                    {storeBreakdown.length > 0
+                      ? `${storeBreakdown[0].store} represents ${storeBreakdown[0].percentage}% of total expenses.`
+                      : "No vendor transactions recorded yet."}
+                  </p>
+                </div>
+
+                <div className="rounded-lg bg-emerald-50 p-4">
+                  <h4 className="text-sm font-bold text-emerald-900">📦 Inventory Total</h4>
+                  <p className="mt-1 text-xs text-emerald-700">
+                    Current stock holding value is ₹
+                    {totalInventoryValue.toLocaleString("en-IN", { minimumFractionDigits: 2 })}.
+                  </p>
+                </div>
+
+                <div className="rounded-lg bg-amber-50 p-4">
+                  <h4 className="text-sm font-bold text-amber-900">⚖️ Settlement Status</h4>
+                  <p className="mt-1 text-xs text-amber-700">
+                    {participantBalances.filter((b) => Math.abs(b.netBalance) > 0.01).length} member(s) have
+                    pending reimbursement balances.
+                  </p>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Participant Split Ledger Table */}
+          <div className="space-y-3">
+            <h2 className="text-lg font-bold text-gray-900">Participant Balance Ledger</h2>
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Member Name</TableHead>
+                  <TableHead>Email</TableHead>
+                  <TableHead>Total Paid Out</TableHead>
+                  <TableHead>Fair Share Owed</TableHead>
+                  <TableHead className="text-right">Net Settlement Balance</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {participantBalances.length === 0 ? (
+                  <TableRow>
+                    <TableCell className="text-center py-6 text-gray-500" colSpan={5}>
+                      No participants recorded.
+                    </TableCell>
+                  </TableRow>
+                ) : (
+                  participantBalances.map((u) => {
+                    const isPositive = u.netBalance > 0.01;
+                    const isNegative = u.netBalance < -0.01;
+
+                    return (
+                      <TableRow key={u.id}>
+                        <TableCell className="font-semibold text-gray-900">{u.name}</TableCell>
+                        <TableCell className="text-gray-500 text-xs">{u.email}</TableCell>
+                        <TableCell className="font-medium text-emerald-600">
+                          ₹{u.totalPaid.toLocaleString("en-IN", { minimumFractionDigits: 2 })}
+                        </TableCell>
+                        <TableCell className="font-medium text-gray-600">
+                          ₹{u.shareOwed.toLocaleString("en-IN", { minimumFractionDigits: 2 })}
+                        </TableCell>
+                        <TableCell className="text-right font-bold">
+                          <span
+                            className={`inline-flex items-center rounded-md px-2.5 py-1 text-xs font-semibold ${
+                              isPositive
+                                ? "bg-emerald-100 text-emerald-800"
+                                : isNegative
+                                ? "bg-amber-100 text-amber-800"
+                                : "bg-gray-100 text-gray-700"
+                            }`}
+                          >
+                            {isPositive
+                              ? `+ ₹${u.netBalance.toLocaleString("en-IN", { minimumFractionDigits: 2 })} (Gets Back)`
+                              : isNegative
+                              ? `- ₹${Math.abs(u.netBalance).toLocaleString("en-IN", { minimumFractionDigits: 2 })} (Owes)`
+                              : "Settled"}
+                          </span>
+                        </TableCell>
+                      </TableRow>
+                    );
+                  })
+                )}
+              </TableBody>
+            </Table>
+          </div>
+        </>
+      )}
     </div>
   );
 }
